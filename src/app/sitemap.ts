@@ -5,8 +5,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, posts] = await Promise.all([
-    getProducts().catch(() => []),
-    getPosts().catch(() => []),
+    getProducts('limit=1000').catch(() => []),
+    getPosts('limit=1000').catch(() => []),
   ]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -38,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const productRoutes: MetadataRoute.Sitemap = products.map((p) => ({
     url: `${SITE_URL}/san-pham/${p.slug}`,
-    lastModified: new Date(),
+    lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));

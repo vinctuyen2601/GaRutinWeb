@@ -26,6 +26,8 @@ export type Product = {
   isActive: boolean;
   seoTitle?: string;
   seoDescription?: string;
+  updatedAt?: string;
+  createdAt?: string;
 };
 
 export type Post = {
