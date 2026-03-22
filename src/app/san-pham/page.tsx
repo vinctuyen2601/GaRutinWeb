@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   keywords: ['mua gà rutin cảnh', 'gà rutin màu xanh', 'gà rutin màu trắng', 'gà rutin thuần chủng', 'giá gà rutin'],
 };
 
-export const revalidate = 1800;
+export const revalidate = 60;
 
 export default async function ProductsPage({
   searchParams,

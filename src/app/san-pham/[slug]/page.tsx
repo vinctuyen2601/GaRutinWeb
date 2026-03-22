@@ -4,7 +4,7 @@ import Image from "next/image";
 import { getProduct, getProducts } from "@/lib/api";
 import OrderForm from "@/components/shared/OrderForm";
 
-export const revalidate = 1800;
+export const revalidate = 120;
 
 export async function generateStaticParams() {
   const products = await getProducts().catch(() => []);
@@ -194,9 +194,10 @@ export default async function ProductDetailPage({
             </div>
 
             {product.description && (
-              <div className="text-gray-600 text-sm leading-relaxed border-t pt-4">
-                {product.description}
-              </div>
+              <div
+                className="prose prose-sm prose-green max-w-none text-gray-600 leading-relaxed border-t pt-4"
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              />
             )}
 
             <OrderForm product={product} />

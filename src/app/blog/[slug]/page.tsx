@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getPost, getPosts } from "@/lib/api";
 import dayjs from "dayjs";
 
-export const revalidate = 3600;
+export const revalidate = 120;
 
 export async function generateStaticParams() {
   const posts = await getPosts().catch(() => []);
@@ -130,13 +130,10 @@ export default async function BlogPostPage({
         </div>
 
         {post.content && (
-          <div className="prose prose-green max-w-none text-gray-700 leading-relaxed">
-            {post.content
-              .split("\n")
-              .map((para, i) =>
-                para.trim() ? <p key={i}>{para}</p> : <br key={i} />
-              )}
-          </div>
+          <div
+            className="prose prose-green max-w-none text-gray-700 leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         )}
 
         {post.tags?.length > 0 && (

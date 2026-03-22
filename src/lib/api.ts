@@ -54,16 +54,16 @@ export type Category = {
 };
 
 export const getProducts = (params?: string) =>
-  fetchApi<Product[]>(`/products${params ? `?${params}` : ''}`, { revalidate: 1800 });
+  fetchApi<Product[]>(`/products${params ? `?${params}` : ''}`, { revalidate: 60 });
 
 export const getProduct = (slug: string) =>
-  fetchApi<Product>(`/products/${slug}`, { revalidate: 1800 });
+  fetchApi<Product>(`/products/${slug}`, { revalidate: 120 });
 
 export const getPosts = (params?: string) =>
-  fetchApi<Post[]>(`/posts${params ? `?${params}` : ''}`, { revalidate: 3600 });
+  fetchApi<Post[]>(`/posts${params ? `?${params}` : ''}`, { revalidate: 60 });
 
 export const getPost = (slug: string) =>
-  fetchApi<Post>(`/posts/${slug}`, { revalidate: 3600 });
+  fetchApi<Post>(`/posts/${slug}`, { revalidate: 120 });
 
 export const getCategories = () =>
   fetchApi<Category[]>('/categories', { revalidate: 3600 });

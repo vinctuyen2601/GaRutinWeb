@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { getPosts } from '@/lib/api';
 import dayjs from 'dayjs';
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Blog - Kinh Nghiệm Nuôi Gà Rutin',
