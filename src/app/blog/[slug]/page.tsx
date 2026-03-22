@@ -92,12 +92,13 @@ export default async function BlogPostPage({
       />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <Link
-          href="/blog"
-          className="text-primary-600 text-sm hover:underline mb-4 block"
-        >
-          ← Về danh sách bài viết
-        </Link>
+        <nav aria-label="breadcrumb" className="flex items-center gap-1.5 text-sm text-gray-500 mb-6">
+          <a href="/" className="hover:text-primary-600 transition-colors">Trang chủ</a>
+          <span>/</span>
+          <a href="/blog" className="hover:text-primary-600 transition-colors">Blog</a>
+          <span>/</span>
+          <span className="text-gray-800 font-medium line-clamp-1">{post.title}</span>
+        </nav>
 
         {post.coverImage && (
           <div className="relative aspect-video rounded-2xl overflow-hidden mb-6">

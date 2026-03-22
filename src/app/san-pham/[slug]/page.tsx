@@ -109,7 +109,17 @@ export default async function ProductDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 pt-4 pb-0">
+        <nav aria-label="breadcrumb" className="flex items-center gap-1.5 text-sm text-gray-500">
+          <a href="/" className="hover:text-primary-600 transition-colors">Trang chủ</a>
+          <span>/</span>
+          <a href="/san-pham" className="hover:text-primary-600 transition-colors">Sản phẩm</a>
+          <span>/</span>
+          <span className="text-gray-800 font-medium line-clamp-1">{product.name}</span>
+        </nav>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           {/* Images */}
           <div>

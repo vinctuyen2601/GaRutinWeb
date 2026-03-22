@@ -25,10 +25,14 @@ export const metadata: Metadata = {
     "mua gà rutin",
     "gà rutin nhiều màu",
   ],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com",
+  },
   openGraph: {
     type: "website",
     locale: "vi_VN",
     siteName: "GaRutin",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com",
   },
   twitter: {
     card: "summary_large_image",

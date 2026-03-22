@@ -11,6 +11,38 @@ export const metadata: Metadata = {
     "Chuyên cung cấp gà rutin cảnh thuần chủng — gà tí hon nhỏ nhất thế giới, nhiều màu lông đẹp, tính cách hiền lành. Phù hợp nuôi trong căn hộ, nhà phố. Giao hàng toàn quốc.",
 };
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Gà Rutin là gì?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Gà Rutin (King Quail, Coturnix chinensis) là loài chim cảnh tí hon nhỏ nhất thế giới, chỉ dài 12–14 cm và nặng 50–70g. Chúng có bộ lông sặc sỡ với nhiều màu đột biến như xanh, nâu, trắng, bạc, maroon. Được nuôi làm cảnh và thú cưng, không phải để lấy thịt hay trứng.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Gà Rutin có nuôi được trong căn hộ không?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Có. Gà Rutin rất phù hợp nuôi trong căn hộ, nhà phố vì thân hình nhỏ (chỉ cần ~1 tấc vuông/con), ít mùi, ít tiếng ồn, và không cần không gian lớn. Nhiệt độ phù hợp 20–37°C.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Gà Rutin sống được bao lâu?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Gà Rutin có tuổi thọ trung bình 3–7 năm trong điều kiện nuôi nhốt tốt. Chúng ít bệnh, dễ chăm sóc và rất bền.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Gà Rutin có những màu lông nào?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Gà Rutin có hàng chục màu đột biến: xanh đá, nâu, trắng, bạc, maroon, vàng, đen, xám... Con đực thường có màu sắc rực rỡ và đặc trưng hơn con cái. GaRutin cung cấp nhiều dòng màu thuần chủng.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Mua gà Rutin ở đâu uy tín?',
+      acceptedAnswer: { '@type': 'Answer', text: 'GaRutin (garutin.com) là địa chỉ chuyên cung cấp gà rutin cảnh thuần chủng tại Việt Nam. Giao hàng toàn quốc, đóng gói an toàn, hỗ trợ tư vấn nuôi miễn phí qua Zalo.' },
+    },
+  ],
+};
+
 export default async function HomePage() {
   const [products, posts, gallery] = await Promise.all([
     getProducts("featured=true&limit=8").catch(() => []),
@@ -20,6 +52,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary-800 to-primary-600 text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
