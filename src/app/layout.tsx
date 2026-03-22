@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://garutin.vn'),
   title: { template: '%s | GaRutin - Trang Trại Gà Rutin Việt Nam', default: 'GaRutin - Gà Rutin Tươi Sống Từ Trang Trại' },
   description: 'Mua gà rutin tươi sống chất lượng cao, thuần chủng, nuôi tự nhiên. Giao hàng toàn quốc. Liên hệ đặt hàng qua Zalo hoặc điện thoại.',
+  icons: { icon: '/favicon.svg' },
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
