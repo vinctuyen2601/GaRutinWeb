@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #16a34a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
