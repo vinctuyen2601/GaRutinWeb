@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import ContactForm from './ContactForm';
 
 export const metadata: Metadata = {
-  title: 'Liên hệ - Đặt hàng gà rutin',
-  description: 'Liên hệ đặt hàng gà rutin qua điện thoại hoặc Zalo. Tư vấn miễn phí, giao hàng toàn quốc.',
+  title: 'Liên hệ - Tư vấn & Mua gà rutin cảnh',
+  description: 'Liên hệ tư vấn và mua gà rutin cảnh thuần chủng qua Zalo hoặc điện thoại. Hỗ trợ chọn giống, màu lông, cách nuôi. Giao hàng toàn quốc.',
 };
 
 const PHONE = process.env.NEXT_PUBLIC_PHONE || '0901234567';
@@ -12,11 +12,12 @@ const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
 export default function ContactPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold mb-8 text-center">📞 Liên hệ & Đặt hàng</h1>
+      <h1 className="text-2xl font-bold mb-2 text-center">📞 Liên hệ & Tư vấn</h1>
+      <p className="text-center text-gray-500 mb-8">Tư vấn miễn phí — chọn giống, màu lông, cách nuôi gà rutin cảnh</p>
 
       <div className="grid md:grid-cols-2 gap-8">
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Cách đặt hàng</h2>
+          <h2 className="text-lg font-semibold">Liên hệ ngay</h2>
           <div className="space-y-3">
             <a
               href={`https://zalo.me/${ZALO}`}
@@ -43,14 +44,14 @@ export default function ContactPage() {
           </div>
 
           <div className="p-4 bg-gray-50 rounded-xl text-sm text-gray-600 space-y-2">
-            <p>🕐 Giờ làm việc: 7:00 - 21:00 (Thứ 2 - CN)</p>
-            <p>📍 Địa chỉ: Việt Nam</p>
-            <p>📦 Giao hàng: Toàn quốc qua xe khách/bưu điện</p>
+            <p>🕐 Giờ hỗ trợ: 7:00 - 21:00 (Thứ 2 - Chủ nhật)</p>
+            <p>🐦 Chuyên gà rutin cảnh thuần chủng, nhiều màu lông đẹp</p>
+            <p>📦 Giao hàng toàn quốc — đóng gói an toàn, đúng kỹ thuật</p>
           </div>
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Gửi yêu cầu</h2>
+          <h2 className="text-lg font-semibold">Để lại thông tin, mình sẽ liên hệ lại</h2>
           <ContactForm />
         </div>
       </div>
