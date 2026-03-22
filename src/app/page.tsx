@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProducts, getPosts } from '@/lib/api';
+import { getProducts, getPosts, getGallery } from '@/lib/api';
 import ProductCard from '@/components/shared/ProductCard';
+import GallerySection from '@/components/shared/GallerySection';
 
 export const metadata: Metadata = {
   title: 'GaRutin - Gà Rutin Cảnh Thuần Chủng, Nhiều Màu Đẹp',
@@ -10,9 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [products, posts] = await Promise.all([
+  const [products, posts, gallery] = await Promise.all([
     getProducts('featured=true&limit=8').catch(() => []),
     getPosts('limit=3').catch(() => []),
+    getGallery().catch(() => []),
   ]);
 
   return (
@@ -155,6 +157,8 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <GallerySection items={gallery} zaloPhone={process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567'} />
 
       {/* CTA */}
       <section className="py-12 bg-primary-700 text-white text-center px-4">

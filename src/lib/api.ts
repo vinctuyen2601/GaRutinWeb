@@ -68,3 +68,17 @@ export const getCategories = () =>
 
 export const getSiteConfig = () =>
   fetchApi<Record<string, string>>('/site-config', { revalidate: 3600 });
+
+export type GalleryItem = {
+  id: string;
+  type: 'image' | 'video';
+  url: string;
+  thumbnail?: string;
+  caption?: string;
+  source: 'admin' | 'customer';
+  customerName?: string;
+  createdAt?: string;
+};
+
+export const getGallery = (params?: string) =>
+  fetchApi<GalleryItem[]>(`/gallery${params ? `?${params}` : ''}`, { revalidate: 3600 });

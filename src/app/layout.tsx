@@ -1,32 +1,65 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import SiteHeader from '@/components/shared/SiteHeader';
-import SiteFooter from '@/components/shared/SiteFooter';
-import StickyBottomBar from '@/components/shared/StickyBottomBar';
+import type { Metadata } from "next";
+import "./globals.css";
+import SiteHeader from "@/components/shared/SiteHeader";
+import SiteFooter from "@/components/shared/SiteFooter";
+import StickyBottomBar from "@/components/shared/StickyBottomBar";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://garutin.vn'),
-  title: { template: '%s | GaRutin - Trang Trại Gà Rutin Việt Nam', default: 'GaRutin - Gà Rutin Tươi Sống Từ Trang Trại' },
-  description: 'Mua gà rutin tươi sống chất lượng cao, thuần chủng, nuôi tự nhiên. Giao hàng toàn quốc. Liên hệ đặt hàng qua Zalo hoặc điện thoại.',
-  icons: { icon: '/favicon.svg' },
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com"
+  ),
+  title: {
+    template: "%s | GaRutin - Gà Rutin Cảnh Việt Nam",
+    default: "GaRutin - Gà Rutin Cảnh Thuần Chủng, Nhiều Màu Đẹp",
+  },
+  description:
+    "Chuyên cung cấp gà rutin cảnh thuần chủng — gà tí hon nhỏ nhất thế giới, nhiều màu lông đẹp, tính cách hiền lành. Phù hợp nuôi trong căn hộ, nhà phố. Giao hàng toàn quốc.",
+  icons: { icon: "/favicon.svg" },
+  keywords: [
+    "gà rutin",
+    "gà rutin cảnh",
+    "gà tí hon",
+    "king quail",
+    "chinese painted quail",
+    "gà rutin thuần chủng",
+    "mua gà rutin",
+    "gà rutin nhiều màu",
+  ],
   openGraph: {
-    type: 'website',
-    locale: 'vi_VN',
-    siteName: 'GaRutin',
+    type: "website",
+    locale: "vi_VN",
+    siteName: "GaRutin",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 
 const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
-  name: 'GaRutin - Trang Trại Gà Rutin',
-  description: 'Trang trại gà rutin thuần chủng, giao hàng toàn quốc',
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://garutin.vn',
-  telephone: process.env.NEXT_PUBLIC_PHONE || '',
-  address: { '@type': 'PostalAddress', addressCountry: 'VN' },
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "GaRutin - Gà Rutin Cảnh Thuần Chủng",
+  description:
+    "Chuyên cung cấp gà rutin cảnh thuần chủng, nhiều màu lông đẹp, giao hàng toàn quốc",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com",
+  telephone: process.env.NEXT_PUBLIC_PHONE || "",
+  image: `${
+    process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com"
+  }/logo.svg`,
+  priceRange: "₫₫",
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "VN",
+    addressLocality: "Việt Nam",
+  },
+  sameAs: [`https://zalo.me/${process.env.NEXT_PUBLIC_ZALO_PHONE || ""}`],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="vi">
       <head>
@@ -37,9 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-white text-gray-900 antialiased">
         <SiteHeader />
-        <main className="min-h-screen pb-20 md:pb-0">
-          {children}
-        </main>
+        <main className="min-h-screen pb-20 md:pb-0">{children}</main>
         <SiteFooter />
         <StickyBottomBar />
       </body>
