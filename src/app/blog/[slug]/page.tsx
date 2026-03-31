@@ -40,8 +40,15 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPost(slug).catch(() => null);
+  const [post, allPosts] = await Promise.all([
+    getPost(slug).catch(() => null),
+    getPosts().catch(() => []),
+  ]);
   if (!post) notFound();
+
+  const relatedPosts = allPosts
+    .filter((p) => p.slug !== slug && p.status === "published")
+    .slice(0, 4);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -146,6 +153,48 @@ export default async function BlogPostPage({
                 {tag}
               </span>
             ))}
+          </div>
+        )}
+
+        {relatedPosts.length > 0 && (
+          <div className="mt-10 pt-8 border-t">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Đọc thêm về gà rutin</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {relatedPosts.map((related) => (
+                <Link
+                  key={related.id}
+                  href={`/blog/${related.slug}`}
+                  className="flex gap-3 bg-gray-50 rounded-xl p-3 hover:bg-primary-50 transition-colors group"
+                >
+                  {related.coverImage && (
+                    <div className="relative w-20 h-16 flex-shrink-0 rounded-lg overflow-hidden">
+                      <Image
+                        src={related.coverImage}
+                        alt={related.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="80px"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    {related.category && (
+                      <span className="text-xs font-medium text-primary-600 uppercase tracking-wide">
+                        {related.category}
+                      </span>
+                    )}
+                    <p className="text-sm font-medium text-gray-800 line-clamp-2 group-hover:text-primary-600 transition-colors mt-0.5">
+                      {related.title}
+                    </p>
+                    {related.publishedAt && (
+                      <p className="text-gray-400 text-xs mt-1">
+                        {dayjs(related.publishedAt).format("DD/MM/YYYY")}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </div>
