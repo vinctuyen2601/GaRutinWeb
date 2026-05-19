@@ -11,8 +11,14 @@ export const metadata: Metadata = {
   description: 'Chia sẻ kinh nghiệm nuôi gà rutin, kỹ thuật chăm sóc, phòng bệnh và nhiều hơn nữa từ trang trại GaRutin.',
 };
 
-export default async function BlogPage() {
-  const posts = await getPosts().catch(() => []);
+const LIMIT = 12;
+
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+
+  const { data: posts, total } = await getPosts(`page=${page}&limit=${LIMIT}`).catch(() => ({ data: [], total: 0, page: 1, limit: LIMIT }));
+  const totalPages = Math.ceil(total / LIMIT);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -21,27 +27,53 @@ export default async function BlogPage() {
       {posts.length === 0 ? (
         <div className="text-center py-16 text-gray-400">Chưa có bài viết nào</div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => (
-            <Link key={post.id} href={`/blog/${post.slug}`} className="block bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
-              {post.coverImage && (
-                <div className="relative aspect-video">
-                  <Image src={post.coverImage} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 100vw, 33vw" />
+        <>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="block bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
+                {post.coverImage && (
+                  <div className="relative aspect-video">
+                    <Image src={post.coverImage} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 100vw, 33vw" />
+                  </div>
+                )}
+                <div className="p-4">
+                  {post.category && (
+                    <span className="text-xs font-medium text-primary-600 uppercase tracking-wide">{post.category}</span>
+                  )}
+                  <h2 className="font-semibold text-gray-800 mt-1 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">{post.title}</h2>
+                  {post.excerpt && <p className="text-gray-500 text-sm line-clamp-2">{post.excerpt}</p>}
+                  {post.publishedAt && (
+                    <p className="text-gray-400 text-xs mt-2">{dayjs(post.publishedAt).format('DD/MM/YYYY')}</p>
+                  )}
                 </div>
+              </Link>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-10">
+              {page > 1 && (
+                <Link href={`/blog?page=${page - 1}`} className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                  ← Trước
+                </Link>
               )}
-              <div className="p-4">
-                {post.category && (
-                  <span className="text-xs font-medium text-primary-600 uppercase tracking-wide">{post.category}</span>
-                )}
-                <h2 className="font-semibold text-gray-800 mt-1 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">{post.title}</h2>
-                {post.excerpt && <p className="text-gray-500 text-sm line-clamp-2">{post.excerpt}</p>}
-                {post.publishedAt && (
-                  <p className="text-gray-400 text-xs mt-2">{dayjs(post.publishedAt).format('DD/MM/YYYY')}</p>
-                )}
-              </div>
-            </Link>
-          ))}
-        </div>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <Link
+                  key={p}
+                  href={`/blog?page=${p}`}
+                  className={`px-4 py-2 rounded-lg border transition-colors ${p === page ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                >
+                  {p}
+                </Link>
+              ))}
+              {page < totalPages && (
+                <Link href={`/blog?page=${page + 1}`} className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                  Sau →
+                </Link>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

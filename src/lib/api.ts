@@ -59,8 +59,10 @@ export const getProducts = (params?: string) =>
 export const getProduct = (slug: string) =>
   fetchApi<Product>(`/products/${slug}`, { revalidate: 120 });
 
+export type PostsResponse = { data: Post[]; total: number; page: number; limit: number };
+
 export const getPosts = (params?: string) =>
-  fetchApi<Post[]>(`/posts${params ? `?${params}` : ''}`, { revalidate: 60 });
+  fetchApi<PostsResponse>(`/posts${params ? `?${params}` : ''}`, { revalidate: 60 });
 
 export const getPost = (slug: string) =>
   fetchApi<Post>(`/posts/${slug}`, { revalidate: 120 });

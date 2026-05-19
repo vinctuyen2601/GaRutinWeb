@@ -6,7 +6,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, posts] = await Promise.all([
     getProducts('limit=1000').catch(() => []),
-    getPosts('limit=1000').catch(() => []),
+    getPosts('limit=1000').then((r) => r.data).catch(() => []),
   ]);
 
   const staticRoutes: MetadataRoute.Sitemap = [

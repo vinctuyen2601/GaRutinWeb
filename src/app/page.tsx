@@ -46,7 +46,7 @@ const faqJsonLd = {
 export default async function HomePage() {
   const [products, posts, gallery] = await Promise.all([
     getProducts("featured=true&limit=8").catch(() => []),
-    getPosts("limit=3").catch(() => []),
+    getPosts("limit=3").then((r) => r.data).catch(() => []),
     getGallery().catch(() => []),
   ]);
 

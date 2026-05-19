@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 export const revalidate = 120;
 
 export async function generateStaticParams() {
-  const posts = await getPosts().catch(() => []);
+  const posts = await getPosts().then((r) => r.data).catch(() => []);
   return posts.map((p) => ({ slug: p.slug }));
 }
 
@@ -42,7 +42,7 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const [post, allPosts] = await Promise.all([
     getPost(slug).catch(() => null),
-    getPosts().catch(() => []),
+    getPosts().then((r) => r.data).catch(() => []),
   ]);
   if (!post) notFound();
 
