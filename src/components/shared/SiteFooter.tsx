@@ -27,6 +27,7 @@ export default function SiteFooter() {
             <li><Link href="/san-pham" className="hover:text-white">Sản phẩm</Link></li>
             <li><Link href="/blog" className="hover:text-white">Blog nuôi gà</Link></li>
             <li><Link href="/lien-he" className="hover:text-white">Liên hệ đặt hàng</Link></li>
+            <li><Link href="/chinh-sach-hoan-tra" className="hover:text-white">Chính sách hoàn trả</Link></li>
           </ul>
         </div>
       </div>
