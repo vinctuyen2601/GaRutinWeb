@@ -4,6 +4,7 @@ import "./globals.css";
 import SiteHeader from "@/components/shared/SiteHeader";
 import SiteFooter from "@/components/shared/SiteFooter";
 import StickyBottomBar from "@/components/shared/StickyBottomBar";
+import TrackVisit from "@/components/shared/TrackVisit";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -78,17 +79,18 @@ export default function RootLayout({
         <main className="min-h-screen pb-20 md:pb-0">{children}</main>
         <SiteFooter />
         <StickyBottomBar />
-        {/* Google Ads */}
+        <TrackVisit />
+        {/* Google tag — loads gtag.js once for all properties */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=AW-18180783236"
           strategy="afterInteractive"
         />
-        <Script id="google-ads" strategy="afterInteractive">{`
+        <Script id="gtag-init" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'AW-18180783236');
-          gtag('event', 'conversion', {'send_to': 'AW-18180783236/anFwCK3DxLQcEIT5ot1D'});
+          gtag('config', 'G-GCTB0DCD1V');
         `}</Script>
       </body>
     </html>
