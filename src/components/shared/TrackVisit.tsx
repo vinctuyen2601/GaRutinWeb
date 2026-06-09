@@ -35,7 +35,8 @@ function TrackVisitInner() {
       }
       window.gtag('config', AW_ID, { page_path: pathname });
     }
-  }, [pathname, searchParams]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return null;
 }
