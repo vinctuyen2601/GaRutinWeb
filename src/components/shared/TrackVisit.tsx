@@ -5,7 +5,7 @@ import { useSearchParams, usePathname } from 'next/navigation';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 const GA_ID = 'G-GCTB0DCD1V';
 const AW_ID = 'AW-18180783236';
-const VALID_PLATFORMS = ['facebook', 'youtube', 'tiktok', 'zalo'];
+const VISITED_KEY = 'garutin_visited';
 
 declare global {
   interface Window {
@@ -18,25 +18,21 @@ function TrackVisitInner() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const utmSource = searchParams.get('utm_source');
-    const platform = utmSource && VALID_PLATFORMS.includes(utmSource) ? utmSource : 'web';
+    const isNewUser = !localStorage.getItem(VISITED_KEY);
+    if (isNewUser) localStorage.setItem(VISITED_KEY, '1');
 
-    // Internal tracking (our own analytics)
     fetch(`${API_URL}/track`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ platform, path: pathname }),
+      body: JSON.stringify({ path: pathname, isNewUser }),
     }).catch(() => {});
 
-    // Google Analytics / Ads — send page_view on every SPA navigation
     if (typeof window.gtag === 'function') {
-      if (GA_ID) {
-        window.gtag('config', GA_ID, { page_path: pathname });
-      }
+      window.gtag('config', GA_ID, { page_path: pathname });
       window.gtag('config', AW_ID, { page_path: pathname });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   return null;
 }
