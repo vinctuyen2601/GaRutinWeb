@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getProduct, getProducts } from "@/lib/api";
 import OrderForm from "@/components/shared/OrderForm";
+import AddToCartButton from "@/components/shared/AddToCartButton";
 
 export const revalidate = 120;
 
@@ -197,6 +198,13 @@ export default async function ProductDetailPage({
               <div
                 className="prose prose-sm prose-green max-w-none text-gray-600 leading-relaxed border-t pt-4"
                 dangerouslySetInnerHTML={{ __html: product.description }}
+              />
+            )}
+
+            {product.stockStatus !== 'out_of_stock' && (
+              <AddToCartButton
+                product={product}
+                className="w-full border-2 border-primary-600 text-primary-600 font-bold py-3 rounded-xl text-base hover:bg-primary-50 transition-colors"
               />
             )}
 

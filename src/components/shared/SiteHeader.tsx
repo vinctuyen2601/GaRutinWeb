@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import CartIcon from './CartIcon';
 
 const PHONE = process.env.NEXT_PUBLIC_PHONE || '0901234567';
 const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
@@ -30,6 +31,7 @@ export default function SiteHeader() {
           >
             Đặt qua Zalo
           </a>
+          <CartIcon />
         </div>
       </div>
     </header>

@@ -1,6 +1,8 @@
+'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Product } from '@/lib/api';
+import AddToCartButton from './AddToCartButton';
 
 const formatVND = (n: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
@@ -32,7 +34,7 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.weightPerUnit && (
             <p className="text-xs text-gray-400 mb-1">{product.weightPerUnit}/{product.unit}</p>
           )}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-2">
             {product.salePrice ? (
               <>
                 <span className="font-bold text-primary-600">{formatVND(product.salePrice)}</span>
@@ -42,6 +44,10 @@ export default function ProductCard({ product }: { product: Product }) {
               <span className="font-bold text-primary-600">{formatVND(product.price)}</span>
             )}
           </div>
+          <AddToCartButton
+            product={product}
+            className="w-full border border-primary-600 text-primary-600 font-medium py-1.5 rounded-lg text-xs hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          />
         </div>
       </div>
     </Link>

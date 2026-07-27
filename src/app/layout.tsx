@@ -5,6 +5,8 @@ import SiteHeader from "@/components/shared/SiteHeader";
 import SiteFooter from "@/components/shared/SiteFooter";
 import StickyBottomBar from "@/components/shared/StickyBottomBar";
 import TrackVisit from "@/components/shared/TrackVisit";
+import CartSidebar from "@/components/shared/CartSidebar";
+import { CartProvider } from "@/lib/CartContext";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -75,10 +77,13 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-white text-gray-900 antialiased">
-        <SiteHeader />
-        <main className="min-h-screen pb-20 md:pb-0">{children}</main>
-        <SiteFooter />
-        <StickyBottomBar />
+        <CartProvider>
+          <SiteHeader />
+          <main className="min-h-screen pb-20 md:pb-0">{children}</main>
+          <SiteFooter />
+          <StickyBottomBar />
+          <CartSidebar />
+        </CartProvider>
         <TrackVisit />
         {/* Google tag — loads gtag.js once for all properties */}
         <Script
