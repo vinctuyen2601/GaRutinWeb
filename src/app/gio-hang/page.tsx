@@ -32,7 +32,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 pb-32">
+    <div className="max-w-3xl mx-auto px-4 py-8 pb-40 md:pb-32">
       <h1 className="text-xl font-bold text-gray-900 mb-6">Giỏ hàng ({items.length})</h1>
 
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl mb-3 bg-gray-50 border border-gray-200">
@@ -120,7 +120,7 @@ export default function CartPage() {
         })}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 shadow-xl">
+      <div className="fixed bottom-14 md:bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 shadow-xl">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-4">
           <div className="flex-1 min-w-0">
             <p className="text-xs text-gray-500">Đã chọn {checkedItems.length}/{items.length} sản phẩm</p>

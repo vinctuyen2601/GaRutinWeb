@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getProduct, getProducts } from "@/lib/api";
 import OrderForm from "@/components/shared/OrderForm";
 import AddToCartButton from "@/components/shared/AddToCartButton";
+import ProductCard from "@/components/shared/ProductCard";
 
 export const revalidate = 120;
 
@@ -47,8 +48,17 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = await getProduct(slug).catch(() => null);
+  const [product, allProducts] = await Promise.all([
+    getProduct(slug).catch(() => null),
+    getProducts().catch(() => []),
+  ]);
   if (!product) notFound();
+
+  const otherProducts = allProducts.filter((p) => p.id !== product.id);
+  const relatedProducts = [
+    ...otherProducts.filter((p) => p.categoryId && p.categoryId === product.categoryId),
+    ...otherProducts.filter((p) => !p.categoryId || p.categoryId !== product.categoryId),
+  ].slice(0, 8);
 
   const price = product.salePrice ?? product.price;
   const formatVND = (n: number) =>
@@ -211,6 +221,17 @@ export default async function ProductDetailPage({
             <OrderForm product={product} />
           </div>
         </div>
+
+        {relatedProducts.length > 0 && (
+          <div className="mt-12 pt-8 border-t">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Sản phẩm khác</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {relatedProducts.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
