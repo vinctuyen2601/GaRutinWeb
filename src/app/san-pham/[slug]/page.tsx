@@ -132,11 +132,17 @@ export default async function ProductDetailPage({
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+        {/* grid-cols-1 KHÔNG phải trang trí. Thiếu nó thì trên điện thoại lưới
+            dùng track ngầm kiểu `auto`, mà track đó không co xuống dưới bề rộng
+            min-content của nội dung. Hàng ô vuông bên dưới là flex với các ô
+            flex-shrink-0 80px, nên min-content của nó là 80*n + 8*(n-1) — với 5
+            media là 432px, vượt khung 390px và đẩy CẢ TRANG rộng ra 448px.
+            Tailwind grid-cols-* sinh ra minmax(0, 1fr), co được. */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           {/* Ảnh & video */}
           <ProductHero
             images={product.images ?? []}
-            videoUrl={product.videoUrl}
+            videos={product.videos}
             name={product.name}
           />
 
