@@ -15,6 +15,7 @@ export default function SiteHeader() {
 
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
           <Link href="/san-pham" className="text-gray-600 hover:text-primary-600 transition-colors">Sản phẩm</Link>
+          <Link href="/video" className="text-gray-600 hover:text-primary-600 transition-colors">Video</Link>
           <Link href="/blog" className="text-gray-600 hover:text-primary-600 transition-colors">Blog</Link>
           <Link href="/lien-he" className="text-gray-600 hover:text-primary-600 transition-colors">Liên hệ</Link>
         </nav>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getProducts, getPosts, getGallery } from "@/lib/api";
 import ProductCard from "@/components/shared/ProductCard";
+import { dungKhung } from "@/lib/reels";
 import GallerySection from "@/components/shared/GallerySection";
 
 export const metadata: Metadata = {
@@ -44,11 +45,16 @@ const faqJsonLd = {
 };
 
 export default async function HomePage() {
-  const [products, posts, gallery] = await Promise.all([
+  const [products, posts, gallery, tatCaSanPham] = await Promise.all([
     getProducts("featured=true&limit=8").catch(() => []),
     getPosts("limit=3").then((r) => r.data).catch(() => []),
     getGallery().catch(() => []),
+    // Lấy TOÀN BỘ sản phẩm, đúng lời gọi mà /video dùng. Dải bên dưới mở luồng
+    // bằng ?i=<số thứ tự>, nên hai nơi phải dựng cùng một danh sách; lấy danh
+    // sách nổi bật ở đây là chỉ số lệch và bấm ô này ra clip khác.
+    getProducts().catch(() => []),
   ]);
+  const khungVideo = dungKhung(tatCaSanPham);
 
   return (
     <>
@@ -128,6 +134,53 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Dải video — lối vào luồng Reels.
+          Đặt trên phần sản phẩm nổi bật và là lối vào CHÍNH trên điện thoại:
+          thanh điều hướng ở header đang hidden md:flex nên máy điện thoại
+          không thấy link "Video" nào. */}
+      {khungVideo.length > 0 && (
+        <section className="py-8 px-4 bg-gray-900">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-white">🎥 Video thật tại trại</h2>
+              <Link href="/video" className="text-white/70 text-sm hover:underline">
+                Xem tất cả →
+              </Link>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {khungVideo.slice(0, 10).map((k, i) => (
+                <Link
+                  key={`${k.product.id}-${i}`}
+                  href={`/video?i=${i}`}
+                  className="relative flex-shrink-0 rounded-xl overflow-hidden bg-gray-800 no-underline"
+                  style={{ width: 120, aspectRatio: '9/16' }}
+                >
+                  {k.product.images?.[0] && (
+                    <Image
+                      src={k.product.images[0]}
+                      alt={k.product.name}
+                      fill
+                      className="object-cover"
+                      sizes="120px"
+                    />
+                  )}
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="w-9 h-9 rounded-full bg-black/55 flex items-center justify-center">
+                      <span className="ml-0.5 border-y-[6px] border-y-transparent border-l-[10px] border-l-white" />
+                    </span>
+                  </span>
+                  <span className="absolute inset-x-0 bottom-0 p-2 pt-6 bg-gradient-to-t from-black/85 to-transparent">
+                    <span className="block text-white text-xs leading-tight line-clamp-2">
+                      {k.product.name}
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Featured products */}
       {products.length > 0 && (
