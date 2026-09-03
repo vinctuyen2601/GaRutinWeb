@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Be_Vietnam_Pro } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import SiteHeader from "@/components/shared/SiteHeader";
@@ -7,6 +8,29 @@ import StickyBottomBar from "@/components/shared/StickyBottomBar";
 import TrackVisit from "@/components/shared/TrackVisit";
 import CartSidebar from "@/components/shared/CartSidebar";
 import { CartProvider } from "@/lib/CartContext";
+
+/**
+ * Font chữ cho toàn web.
+ *
+ * Trước đây KHÔNG khai font nào cả — cả web chạy bằng ngăn xếp mặc định của
+ * Tailwind, tức là font hệ thống. Hệ quả: mỗi máy hiện một kiểu, và dấu tiếng
+ * Việt thường phải lấy từ font dự phòng khác với phần chữ Latin, nên nét chữ và
+ * độ cao dấu không khớp nhau — nhìn lệch lạc, nhất là ở những chữ nhiều dấu như
+ * "Sản phẩm", "Liên hệ", "Trứng cút lộn".
+ *
+ * subsets PHẢI có 'vietnamese'. Chỉ 'latin' và 'latin-ext' là thiếu đúng những
+ * ký tự đặc thù tiếng Việt (ế ệ ự ữ ơ ư kèm dấu), và chúng lại rơi về font dự
+ * phòng — đúng lỗi mà 17Fishing đang dính.
+ *
+ * Be Vietnam Pro do người Việt thiết kế riêng cho tiếng Việt: dấu đặt gọn, không
+ * đội cao làm giãn dòng như phần lớn font phương Tây khi phải ghép dấu.
+ */
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-be-vietnam",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -69,14 +93,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
+    <html lang="vi" className={beVietnamPro.variable}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-white text-gray-900 antialiased">
+      <body className="bg-white text-gray-900 antialiased font-sans">
         <CartProvider>
           <SiteHeader />
           <main className="min-h-screen pb-20 md:pb-0">{children}</main>

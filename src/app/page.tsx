@@ -135,10 +135,35 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Featured products */}
+      {products.length > 0 && (
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">
+                🌟 Sản phẩm nổi bật
+              </h2>
+              <Link
+                href="/san-pham"
+                className="text-primary-600 text-sm font-medium hover:underline"
+              >
+                Xem tất cả →
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {products.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Dải video — lối vào luồng Reels.
-          Đặt trên phần sản phẩm nổi bật và là lối vào CHÍNH trên điện thoại:
-          thanh điều hướng ở header đang hidden md:flex nên máy điện thoại
-          không thấy link "Video" nào. */}
+          Đặt ngay SAU phần sản phẩm nổi bật: khách xem hàng xong, đang lưỡng
+          lự thì gặp video thật của chính những món vừa xem.
+          Đây cũng là lối vào CHÍNH trên điện thoại — thanh điều hướng ở header
+          đang hidden md:flex nên máy điện thoại không thấy link "Video" nào. */}
       {khungVideo.length > 0 && (
         <section className="py-8 px-4 bg-gray-900">
           <div className="max-w-6xl mx-auto">
@@ -176,30 +201,6 @@ export default async function HomePage() {
                     </span>
                   </span>
                 </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Featured products */}
-      {products.length > 0 && (
-        <section className="py-12 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                🌟 Sản phẩm nổi bật
-              </h2>
-              <Link
-                href="/san-pham"
-                className="text-primary-600 text-sm font-medium hover:underline"
-              >
-                Xem tất cả →
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {products.map((p) => (
-                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </div>

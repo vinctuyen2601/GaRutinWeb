@@ -4,6 +4,11 @@ const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        // Đặt ở font-sans để mọi thứ chưa khai font đều thừa hưởng, không phải
+        // đi gắn class cho từng chỗ.
+        sans: ['var(--font-be-vietnam)', 'system-ui', 'sans-serif'],
+      },
       colors: {
         primary: {
           50:  '#f0fdf4',
