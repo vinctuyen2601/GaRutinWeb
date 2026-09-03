@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { getProducts, type Product } from '@/lib/api';
 import { dungKhung } from '@/lib/reels';
 import ReelsFeed from '@/components/shared/ReelsFeed';
@@ -9,6 +9,20 @@ export const metadata: Metadata = {
   // Trang này gần như không có nội dung chữ để xếp hạng, và mỗi khung đều dẫn
   // về trang sản phẩm tương ứng — nơi Google nên gửi người tìm tới.
   robots: { index: false, follow: true },
+};
+
+/**
+ * viewport-fit=cover chỉ khai cho riêng trang này, không khai ở layout gốc.
+ *
+ * Không có nó thì env(safe-area-inset-*) luôn bằng 0 và nút bấm chui xuống dưới
+ * tai thỏ / vạch home của iPhone. Nhưng khai ở layout gốc là mọi trang khác
+ * cũng cho nội dung tràn vào vùng đó — cả web phải rà lại, không đáng.
+ */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#000000',
 };
 
 export const revalidate = 60;

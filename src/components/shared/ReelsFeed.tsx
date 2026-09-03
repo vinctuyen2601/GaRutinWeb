@@ -8,6 +8,16 @@ import type { Product } from '@/lib/api';
 import { useCart } from '@/lib/CartContext';
 import type { Khung } from '@/lib/reels';
 
+/**
+ * Bề rộng cột nội dung.
+ *
+ * Điện thoại (dưới 480px) thì phủ kín màn hình như TikTok. Máy tính thì bó lại
+ * thành một cột dáng điện thoại giữa màn hình, đúng cách Instagram và TikTok
+ * làm trên web — thả video dọc ra giữa màn 1440px thì nó bé tí giữa biển đen và
+ * nút mua kéo dài cả mét.
+ */
+const COT = 'min(100%, 480px)';
+
 const fmt = (n: number) => new Intl.NumberFormat('vi-VN').format(Number(n)) + '₫';
 
 /**
@@ -33,6 +43,21 @@ export default function ReelsFeed({
   const [dangXem, setDangXem] = useState(batDau);
   const [tatTieng, setTatTieng] = useState(true);
   const [hienGoiY, setHienGoiY] = useState(true);
+
+  /**
+   * Khoá cuộn của trang nền khi luồng đang mở.
+   *
+   * Luồng phủ `fixed inset-0` nên trang dưới vẫn cuộn được. Trên điện thoại,
+   * vuốt ở mép luồng có thể ăn sang trang nền và kéo theo cả thao tác kéo-để-
+   * tải-lại của trình duyệt, làm mất khung đang xem.
+   */
+  useEffect(() => {
+    const cu = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = cu;
+    };
+  }, []);
 
   // Gợi ý vuốt chỉ có ích ở giây đầu. Để mãi thì nó che mất chính video.
   useEffect(() => {
@@ -83,6 +108,19 @@ export default function ReelsFeed({
     });
   }, [tatTieng, khung.length]);
 
+  /**
+   * Chạm vào video để dừng/phát.
+   *
+   * Thói quen sẵn có từ TikTok và Reels: muốn nhìn kỹ con giống thì chạm cho
+   * dừng lại. Không có nó thì khách phải xem clip lặp mãi.
+   */
+  const chamVideo = (i: number) => {
+    const v = refs.current[i];
+    if (!v) return;
+    if (v.paused) v.play().catch(() => {});
+    else v.pause();
+  };
+
   const mua = (p: Product) => {
     muaNgay(p);
     router.push('/dat-hang');
@@ -110,8 +148,16 @@ export default function ReelsFeed({
   return (
     <div className="fixed inset-0 z-[60] bg-black overflow-y-scroll snap-y snap-mandatory overscroll-contain">
       {/* Nút đóng và bật tiếng nằm ngoài vòng lặp: chúng đứng yên khi cuộn,
-          không cần vẽ lại cho từng khung. */}
-      <div className="fixed top-4 right-4 z-10 flex gap-2">
+          không cần vẽ lại cho từng khung.
+          Căn theo mép phải của CỘT chứ không của màn hình — trên máy tính cột
+          chỉ rộng 480px, dán nút vào góc màn hình thì chúng lạc lõng cách video
+          cả nửa mét.
+          paddingTop theo safe-area: thiếu là nút chui dưới tai thỏ iPhone. */}
+      <div
+        className="fixed inset-x-0 z-10 flex justify-end gap-2 px-4 pointer-events-none"
+        style={{ top: 'max(1rem, env(safe-area-inset-top))' }}
+      >
+        <div className="w-full mx-auto flex justify-end gap-2 pointer-events-auto" style={{ maxWidth: COT }}>
         <button
           type="button"
           onClick={() => setTatTieng((t) => !t)}
@@ -127,6 +173,7 @@ export default function ReelsFeed({
         >
           ✕
         </Link>
+        </div>
       </div>
 
       {khung.map((k, i) => (
@@ -136,6 +183,7 @@ export default function ReelsFeed({
           // màn hình thật, khung bị lệch và lộ mép khung kế bên.
           className="relative h-dvh w-full snap-start snap-always flex items-center justify-center"
         >
+          <div className="relative h-full w-full mx-auto flex items-center justify-center" style={{ maxWidth: COT }}>
           <video
             ref={(el) => {
               refs.current[i] = el;
@@ -148,7 +196,8 @@ export default function ReelsFeed({
             playsInline
             // object-contain chứ không cover: clip quay ngang mà cắt thành 9:16
             // thì mất gần hết khung hình.
-            className="max-h-full max-w-full object-contain"
+            onClick={() => chamVideo(i)}
+            className="max-h-full max-w-full object-contain cursor-pointer"
             /**
              * Chỉ khung đang xem mới tải đầy đủ; khung kế tải phần đầu để vuốt
              * tới là chạy ngay; còn lại không tải gì. Với khách 4G đây là khác
@@ -158,7 +207,12 @@ export default function ReelsFeed({
           />
 
           {/* Nền mờ dưới đáy để chữ trắng đọc được trên mọi khung hình */}
-          <div className="absolute inset-x-0 bottom-0 pt-20 pb-5 px-4 bg-gradient-to-t from-black/80 to-transparent">
+          {/* paddingBottom theo safe-area: thiếu là nút MUA NGAY nằm dưới vạch
+              home của iPhone, chạm vào lại thành vuốt-thoát-ứng-dụng. */}
+          <div
+            className="absolute inset-x-0 bottom-0 pt-20 px-4 bg-gradient-to-t from-black/80 to-transparent"
+            style={{ paddingBottom: 'max(1.25rem, env(safe-area-inset-bottom))' }}
+          >
             <Link
               href={`/san-pham/${k.product.slug}`}
               className="text-white font-bold text-lg no-underline block leading-snug"
@@ -191,6 +245,7 @@ export default function ReelsFeed({
               </span>
             </div>
           )}
+          </div>
         </section>
       ))}
     </div>
