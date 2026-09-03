@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getPost, getPosts } from "@/lib/api";
+import { getPost, getPosts, getProducts, type Product } from "@/lib/api";
+import { dungKhung } from "@/lib/reels";
+import VideoStrip from "@/components/shared/VideoStrip";
 import dayjs from "dayjs";
 
 export const revalidate = 120;
@@ -40,11 +42,15 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [post, allPosts] = await Promise.all([
+  const [post, allPosts, sanPham] = await Promise.all([
     getPost(slug).catch(() => null),
     getPosts().then((r) => r.data).catch(() => []),
+    // Cùng lời gọi mà /video và trang chủ dùng — chỉ số ?i= phải khớp cả ba nơi.
+    getProducts().catch((): Product[] => []),
   ]);
   if (!post) notFound();
+
+  const khungVideo = dungKhung(sanPham);
 
   const relatedPosts = allPosts
     .filter((p) => p.slug !== slug && p.status === "published")
@@ -154,6 +160,19 @@ export default async function BlogPostPage({
               </span>
             ))}
           </div>
+        )}
+
+        {/* Video đặt sau bài nhưng TRƯỚC phần "Đọc thêm".
+            Người vừa đọc xong bài về giống cút là người đang cân nhắc mua —
+            cho họ nhìn tận mắt ngay lúc đó. Để sau phần đọc thêm thì phần lớn
+            đã bấm sang bài khác và không bao giờ cuộn tới. */}
+        {khungVideo.length > 0 && (
+          <VideoStrip
+            khung={khungVideo}
+            tieuDe="🎥 Xem tận mắt trước khi mua"
+            toiDa={6}
+            className="mt-10"
+          />
         )}
 
         {relatedPosts.length > 0 && (
