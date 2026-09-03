@@ -3,11 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import type { GalleryItem } from '@/lib/api';
+import { getYouTubeId } from '@/lib/youtube';
 
-function getYouTubeId(url: string) {
-  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-  return m ? m[1] : null;
-}
 
 function MediaThumb({ item, onClick }: { item: GalleryItem; onClick: () => void }) {
   const ytId = item.type === 'video' ? getYouTubeId(item.url) : null;

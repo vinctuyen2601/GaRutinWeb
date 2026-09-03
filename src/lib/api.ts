@@ -18,6 +18,8 @@ export type Product = {
   price: number;
   salePrice?: number;
   images: string[];
+  /** Link YouTube hoặc đường dẫn mp4 tự lưu. Rỗng nếu sản phẩm chưa có video. */
+  videoUrl?: string | null;
   categoryId?: string;
   weightPerUnit?: string;
   unit: string;

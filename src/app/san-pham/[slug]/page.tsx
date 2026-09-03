@@ -5,6 +5,7 @@ import { getProduct, getProducts } from "@/lib/api";
 import OrderForm from "@/components/shared/OrderForm";
 import AddToCartButton from "@/components/shared/AddToCartButton";
 import ProductCard from "@/components/shared/ProductCard";
+import ProductHero from "@/components/shared/ProductHero";
 
 export const revalidate = 120;
 
@@ -132,43 +133,12 @@ export default async function ProductDetailPage({
 
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          {/* Images */}
-          <div>
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-3">
-              {product.images?.[0] ? (
-                <Image
-                  src={product.images[0]}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-8xl">
-                  🐦
-                </div>
-              )}
-            </div>
-            {product.images?.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto">
-                {product.images.slice(1, 5).map((img, i) => (
-                  <div
-                    key={i}
-                    className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100"
-                  >
-                    <Image
-                      src={img}
-                      alt={`${product.name} ${i + 2}`}
-                      fill
-                      className="object-cover"
-                      sizes="80px"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Ảnh & video */}
+          <ProductHero
+            images={product.images ?? []}
+            videoUrl={product.videoUrl}
+            name={product.name}
+          />
 
           {/* Info + Order Form */}
           <div className="space-y-5">
