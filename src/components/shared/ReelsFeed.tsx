@@ -3,10 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import type { Product } from '@/lib/api';
-import { useCart } from '@/lib/CartContext';
 import type { Khung } from '@/lib/reels';
+import OrderForm from './OrderForm';
 
 /**
  * Bề rộng cột nội dung.
@@ -37,12 +36,12 @@ export default function ReelsFeed({
   khung: Khung[];
   batDau?: number;
 }) {
-  const router = useRouter();
-  const { muaNgay } = useCart();
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
   const [dangXem, setDangXem] = useState(batDau);
   const [tatTieng, setTatTieng] = useState(true);
   const [hienGoiY, setHienGoiY] = useState(true);
+  /** Sản phẩm đang mở tấm đặt hàng. null là chưa mở. */
+  const [dangMua, setDangMua] = useState<Product | null>(null);
 
   /**
    * Khoá cuộn của trang nền khi luồng đang mở.
@@ -121,9 +120,26 @@ export default function ReelsFeed({
     else v.pause();
   };
 
-  const mua = (p: Product) => {
-    muaNgay(p);
-    router.push('/dat-hang');
+  /**
+   * Mở tấm đặt hàng ngay trên video, không rời luồng.
+   *
+   * Trước đây nút này điều hướng sang /dat-hang — đúng chức năng nhưng mất hẳn
+   * cảm giác TikTok: đang xem thì bị ném sang trang khác, xem tiếp phải quay
+   * lại từ đầu. Nay tấm trượt lên, đặt xong đóng lại là xem tiếp đúng chỗ cũ.
+   *
+   * Tạm dừng video khi tấm mở. TikTok để chạy tiếp, nhưng ở đây khách đang gõ
+   * tên và địa chỉ — bàn phím che gần hết màn hình nên video không ai thấy, mà
+   * vẫn tốn dung lượng. Đóng tấm là chạy tiếp từ đúng chỗ đang dừng, không tua
+   * về đầu.
+   */
+  const moMua = (p: Product) => {
+    refs.current[dangXem]?.pause();
+    setDangMua(p);
+  };
+
+  const dongMua = () => {
+    setDangMua(null);
+    refs.current[dangXem]?.play().catch(() => {});
   };
 
   if (khung.length === 0) {
@@ -230,7 +246,7 @@ export default function ReelsFeed({
             </div>
             <button
               type="button"
-              onClick={() => mua(k.product)}
+              onClick={() => moMua(k.product)}
               className="w-full py-3.5 rounded-xl bg-primary-600 text-white font-bold text-base active:scale-[0.98] transition-transform"
               style={{ background: '#16a34a' }}
             >
@@ -248,6 +264,49 @@ export default function ReelsFeed({
           </div>
         </section>
       ))}
+
+      {/* Tấm đặt hàng trượt lên từ đáy, đè lên video.
+          z cao hơn luồng (60) để nằm trên; nền mờ bấm vào là đóng.
+          OrderForm dùng lại nguyên vẹn của trang chi tiết sản phẩm — nó tự có
+          ô số lượng, tự gửi đơn và tự hiện màn thành công, nên không phải viết
+          lại luồng đặt hàng thứ hai để rồi hai bên lệch nhau. */}
+      {dangMua && (
+        <div className="fixed inset-0 z-[70]">
+          <button
+            type="button"
+            aria-label="Đóng"
+            onClick={dongMua}
+            className="absolute inset-0 w-full h-full bg-black/60"
+          />
+          <div
+            className="absolute bottom-0 inset-x-0 mx-auto bg-gray-50 rounded-t-2xl overflow-y-auto"
+            // 85dvh: chừa một dải video phía trên để khách vẫn thấy mình đang ở
+            // trong luồng, không tưởng đã sang trang khác.
+            style={{ maxWidth: COT, maxHeight: '85dvh' }}
+          >
+            {/* Không đặt tiêu đề ở đây: OrderForm đã có sẵn "Đặt hàng ngay",
+                thêm nữa thành hai tiêu đề chồng nhau. */}
+            <div className="sticky top-0 bg-gray-50 flex items-center justify-end px-4 pt-3 pb-2">
+              {/* Vạch kéo quen thuộc của tấm trượt trên điện thoại */}
+              <span className="absolute left-1/2 -translate-x-1/2 top-1.5 w-10 h-1 rounded-full bg-gray-300" />
+              <button
+                type="button"
+                onClick={dongMua}
+                aria-label="Đóng"
+                className="mt-2 w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center"
+              >
+                ✕
+              </button>
+            </div>
+            <div
+              className="px-4 pt-1"
+              style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
+            >
+              <OrderForm product={dangMua} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

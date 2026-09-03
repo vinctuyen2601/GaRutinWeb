@@ -13,7 +13,6 @@ type State = {
 
 type Action =
   | { type: 'ADD'; product: Product }
-  | { type: 'BUY_NOW'; product: Product }
   | { type: 'REMOVE'; productId: string }
   | { type: 'UPDATE_QTY'; productId: string; qty: number }
   | { type: 'TOGGLE_CHECK'; key: string }
@@ -36,26 +35,6 @@ function reducer(state: State, action: Action): State {
         : [...state.items, { product: action.product, quantity: 1 }];
       const checkedKeys = state.checkedKeys.includes(id) ? state.checkedKeys : [...state.checkedKeys, id];
       return { ...state, items, checkedKeys, open: true };
-    }
-    /**
-     * Mua ngay từ luồng video: thêm sản phẩm và tick DUY NHẤT nó.
-     *
-     * Trang /dat-hang lấy hàng từ checkedItems, nên bỏ tick các món khác là
-     * cách để đơn chỉ gồm món đang xem. Khách đang lướt video là mua bốc đồng
-     * một món — kéo cả giỏ vào đơn là bắt họ trả tiền cho thứ chưa định mua
-     * lúc này. Món khác vẫn nằm nguyên trong giỏ, chỉ bị bỏ tick.
-     *
-     * Phải là MỘT hành động chứ không phải gọi lần lượt ADD rồi SET_ALL_CHECKED:
-     * ADD đặt open: true nên khay giỏ sẽ loé lên đè cả video trước khi chuyển
-     * trang.
-     */
-    case 'BUY_NOW': {
-      const id = action.product.id;
-      const existing = state.items.find(i => i.product.id === id);
-      const items = existing
-        ? state.items.map(i => i.product.id === id ? { ...i, quantity: i.quantity + 1 } : i)
-        : [...state.items, { product: action.product, quantity: 1 }];
-      return { ...state, items, checkedKeys: [id], open: false };
     }
     case 'REMOVE':
       return {
@@ -95,8 +74,6 @@ const CHECKED_KEY = 'garutin_cart_checked';
 const CartContext = createContext<{
   state: State;
   addToCart: (product: Product) => void;
-  /** Mua ngay: thêm vào giỏ và chỉ tick món này. Xem nhánh BUY_NOW. */
-  muaNgay: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateQty: (productId: string, qty: number) => void;
   toggleCheck: (key: string) => void;
@@ -134,7 +111,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [state.items, state.checkedKeys, state.hydrated]);
 
   const addToCart      = useCallback((product: Product) => dispatch({ type: 'ADD', product }), []);
-  const muaNgay        = useCallback((product: Product) => dispatch({ type: 'BUY_NOW', product }), []);
   const removeFromCart = useCallback((productId: string) => dispatch({ type: 'REMOVE', productId }), []);
   const updateQty      = useCallback((productId: string, qty: number) => dispatch({ type: 'UPDATE_QTY', productId, qty }), []);
   const toggleCheck    = useCallback((key: string) => dispatch({ type: 'TOGGLE_CHECK', key }), []);
@@ -152,7 +128,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider value={{
-      state, addToCart, muaNgay, removeFromCart, updateQty, toggleCheck, setAllChecked,
+      state, addToCart, removeFromCart, updateQty, toggleCheck, setAllChecked,
       openCart, closeCart, clearCart, totalItems, totalPrice, checkedItems, checkedTotal,
     }}>
       {children}
