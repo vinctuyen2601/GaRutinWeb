@@ -169,7 +169,7 @@ export default async function BlogPostPage({
         {khungVideo.length > 0 && (
           <VideoStrip
             khung={khungVideo}
-            tieuDe="🎥 Xem tận mắt trước khi mua"
+            tieuDe="Videos"
             toiDa={6}
             className="mt-10"
           />
