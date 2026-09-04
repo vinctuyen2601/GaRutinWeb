@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/lib/CartContext';
+import { dangGiamGia, giaBan, giaGach } from '@/lib/gia';
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
@@ -48,8 +49,8 @@ export default function CartPage() {
       <div className="space-y-2">
         {items.map((item) => {
           const checked = state.checkedKeys.includes(item.product.id);
-          const price = Number(item.product.salePrice ?? item.product.price);
-          const isOnSale = !!item.product.salePrice && item.product.salePrice < item.product.price;
+          const price = giaBan(item.product);
+          const isOnSale = dangGiamGia(item.product);
           const discountPct = isOnSale
             ? Math.round((1 - item.product.salePrice! / item.product.price) * 100)
             : 0;
@@ -85,7 +86,7 @@ export default function CartPage() {
                   <span className="text-sm font-bold text-primary-600">{fmt(price)}</span>
                   {isOnSale && (
                     <>
-                      <span className="text-xs line-through text-gray-400">{fmt(item.product.price)}</span>
+                      <span className="text-xs line-through text-gray-400">{fmt(giaGach(item.product)!)}</span>
                       <span className="text-xs font-bold px-1.5 py-0.5 rounded-full text-white bg-red-500" style={{ fontSize: 10 }}>
                         -{discountPct}%
                       </span>

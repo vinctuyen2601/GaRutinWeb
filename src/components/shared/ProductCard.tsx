@@ -4,6 +4,7 @@ import Image from 'next/image';
 import type { Product } from '@/lib/api';
 import AddToCartButton from './AddToCartButton';
 import { hauToDonVi } from '@/lib/donVi';
+import { dangGiamGia, giaBan, giaGach } from '@/lib/gia';
 
 const formatVND = (n: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
@@ -36,13 +37,9 @@ export default function ProductCard({ product }: { product: Product }) {
             <p className="text-xs text-gray-400 mb-1">{product.weightPerUnit}{hauToDonVi(product)}</p>
           )}
           <div className="flex items-center gap-2 mb-2">
-            {product.salePrice ? (
-              <>
-                <span className="font-bold text-primary-600">{formatVND(product.salePrice)}</span>
-                <span className="text-gray-400 text-xs line-through">{formatVND(product.price)}</span>
-              </>
-            ) : (
-              <span className="font-bold text-primary-600">{formatVND(product.price)}</span>
+            <span className="font-bold text-primary-600">{formatVND(giaBan(product))}</span>
+            {giaGach(product) !== null && (
+              <span className="text-gray-400 text-xs line-through">{formatVND(giaGach(product)!)}</span>
             )}
           </div>
           <AddToCartButton

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { Product } from '@/lib/api';
+import { giaBan, giaGach } from '@/lib/gia';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 
@@ -9,7 +10,7 @@ const formatVND = (n: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
 
 export default function OrderForm({ product }: { product: Product }) {
-  const price = product.salePrice ?? product.price;
+  const price = giaBan(product);
   const [qty, setQty] = useState(1);
   const [form, setForm] = useState({ customerName: '', customerPhone: '', customerAddress: '', notes: '' });
   const [loading, setLoading] = useState(false);

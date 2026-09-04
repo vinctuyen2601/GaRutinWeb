@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getPosts, getProducts } from '@/lib/api';
 import dayjs from 'dayjs';
+import { giaBan, giaGach } from '@/lib/gia';
 
 export const revalidate = 60;
 
@@ -147,7 +148,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                 <div className="p-3">
                   <p className="text-sm font-medium text-gray-800 line-clamp-2 group-hover:text-primary-600 transition-colors">{product.name}</p>
                   <p className="text-primary-600 font-semibold text-sm mt-1">
-                    {product.salePrice ? formatPrice(product.salePrice) : formatPrice(product.price)}
+                    {formatPrice(giaBan(product))}
                   </p>
                 </div>
               </Link>

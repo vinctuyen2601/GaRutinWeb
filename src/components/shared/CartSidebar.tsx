@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/lib/CartContext';
+import { giaBan, giaGach } from '@/lib/gia';
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
@@ -29,7 +30,7 @@ export default function CartSidebar() {
           ) : (
             state.items.map(item => {
               const img = item.product.images?.[0];
-              const price = Number(item.product.salePrice ?? item.product.price);
+              const price = giaBan(item.product);
               return (
                 <div key={item.product.id} className="flex gap-3 rounded-xl p-3 bg-gray-50">
                   <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">

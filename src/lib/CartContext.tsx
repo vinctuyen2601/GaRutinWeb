@@ -1,6 +1,7 @@
 'use client';
 import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import type { Product } from './api';
+import { giaBan, giaGach } from '@/lib/gia';
 
 export type CartItem = { product: Product; quantity: number };
 
@@ -119,7 +120,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeCart      = useCallback(() => dispatch({ type: 'CLOSE' }), []);
   const clearCart      = useCallback(() => dispatch({ type: 'CLEAR' }), []);
 
-  const getItemPrice = (i: CartItem) => Number(i.product.salePrice ?? i.product.price);
+  const getItemPrice = (i: CartItem) => giaBan(i.product);
 
   const totalItems   = state.items.reduce((s, i) => s + i.quantity, 0);
   const totalPrice   = state.items.reduce((s, i) => s + getItemPrice(i) * i.quantity, 0);

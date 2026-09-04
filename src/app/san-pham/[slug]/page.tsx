@@ -8,6 +8,7 @@ import ProductCard from "@/components/shared/ProductCard";
 import ProductHero from "@/components/shared/ProductHero";
 import { hauToDonVi } from "@/lib/donVi";
 import ProductStickyBar from "@/components/shared/ProductStickyBar";
+import { giaBan, giaGach } from "@/lib/gia";
 
 export const revalidate = 120;
 
@@ -24,7 +25,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await getProduct(slug).catch(() => null);
   if (!product) return {};
-  const price = product.salePrice ?? product.price;
+  const price = giaBan(product);
   const formattedPrice = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
@@ -63,7 +64,7 @@ export default async function ProductDetailPage({
     ...otherProducts.filter((p) => !p.categoryId || p.categoryId !== product.categoryId),
   ].slice(0, 8);
 
-  const price = product.salePrice ?? product.price;
+  const price = giaBan(product);
   const formatVND = (n: number) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -163,9 +164,9 @@ export default async function ProductDetailPage({
                 <span className="text-3xl font-bold text-primary-600">
                   {formatVND(price)}
                 </span>
-                {product.salePrice && (
+                {giaGach(product) !== null && (
                   <span className="text-gray-400 line-through text-lg">
-                    {formatVND(product.price)}
+                    {formatVND(giaGach(product)!)}
                   </span>
                 )}
                 {hauToDonVi(product) && (

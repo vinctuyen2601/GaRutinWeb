@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/lib/CartContext';
 import type { CartItem } from '@/lib/CartContext';
+import { giaBan, giaGach } from '@/lib/gia';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 const LAST_CUSTOMER_KEY = 'garutin_last_customer';
@@ -31,7 +32,7 @@ export default function CheckoutPage() {
     } catch {}
   }, []);
 
-  const getItemPrice = (i: CartItem) => Number(i.product.salePrice ?? i.product.price);
+  const getItemPrice = (i: CartItem) => giaBan(i.product);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

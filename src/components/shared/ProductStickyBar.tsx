@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCart } from '@/lib/CartContext';
 import { hauToDonVi } from '@/lib/donVi';
 import type { Product } from '@/lib/api';
+import { giaBan, giaGach } from '@/lib/gia';
 
 const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
 
@@ -29,7 +30,7 @@ export default function ProductStickyBar({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const [daThem, setDaThem] = useState(false);
   const hetHang = product.stockStatus === 'out_of_stock';
-  const gia = product.salePrice ?? product.price;
+  const gia = giaBan(product);
 
   const themVaoGio = () => {
     if (hetHang) return;
@@ -67,12 +68,12 @@ export default function ProductStickyBar({ product }: { product: Product }) {
 
         <div className="min-w-0 flex-1">
           <div className="text-primary-600 font-bold leading-tight truncate">
-            {formatVND(Number(gia))}
+            {formatVND(gia)}
             <span className="text-gray-400 text-xs font-normal">{hauToDonVi(product)}</span>
           </div>
-          {product.salePrice && (
+          {giaGach(product) !== null && (
             <div className="text-gray-400 line-through text-xs leading-tight">
-              {formatVND(Number(product.price))}
+              {formatVND(giaGach(product)!)}
             </div>
           )}
         </div>

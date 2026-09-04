@@ -7,6 +7,7 @@ import type { Product } from '@/lib/api';
 import type { Khung } from '@/lib/reels';
 import OrderForm from './OrderForm';
 import { hauToDonVi } from '@/lib/donVi';
+import { dangGiamGia, giaBan, giaGach } from '@/lib/gia';
 
 /**
  * Bề rộng cột nội dung.
@@ -238,10 +239,10 @@ export default function ReelsFeed({
             </Link>
             <div className="flex items-baseline gap-2 mt-1 mb-3">
               <span className="text-white font-bold text-xl">
-                {fmt(k.product.salePrice ?? k.product.price)}
+                {fmt(giaBan(k.product))}
               </span>
-              {k.product.salePrice != null && (
-                <span className="text-white/60 line-through text-sm">{fmt(k.product.price)}</span>
+              {giaGach(k.product) !== null && (
+                <span className="text-white/60 line-through text-sm">{fmt(giaGach(k.product)!)}</span>
               )}
               {hauToDonVi(k.product) && (
                 <span className="text-white/60 text-sm">{hauToDonVi(k.product)}</span>
