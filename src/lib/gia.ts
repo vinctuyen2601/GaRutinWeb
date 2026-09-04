@@ -4,7 +4,12 @@
  * Chỉ hiện giá gạch khi giá sale THẤP HƠN giá niêm yết. Trước đây các trang chỉ
  * kiểm tra "có điền giá sale hay không", nên một sản phẩm có sale bằng đúng giá
  * niêm yết vẫn hiện gạch ngang lên chính con số khách đang trả — giảm 0% nhưng
- * trông như đang khuyến mãi. Trên 17Fishing có đúng một sản phẩm như vậy.
+ * trông như đang khuyến mãi.
+ *
+ * GaRutin hiện chưa có hàng nào rơi vào trường hợp này; luật viết ra để nó
+ * không bao giờ xảy ra. Bên 17Fishing đã có một hàng dữ liệu như vậy và nó làm
+ * hỏng feed Google (Google từ chối mặt hàng có sale_price không thấp hơn
+ * price), dù trang web vẫn hiện đúng nhờ giá lấy từ biến thể.
  *
  * Sale cao hơn giá niêm yết thì coi như không có sale, và khách trả giá niêm
  * yết. Đó là dữ liệu nhập nhầm; nghiêng về phía có lợi cho khách là lựa chọn
