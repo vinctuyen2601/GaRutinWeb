@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Product } from '@/lib/api';
 import AddToCartButton from './AddToCartButton';
+import { hauToDonVi } from '@/lib/donVi';
 
 const formatVND = (n: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
@@ -32,7 +33,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="p-3">
           <h3 className="font-medium text-gray-900 text-sm leading-snug mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">{product.name}</h3>
           {product.weightPerUnit && (
-            <p className="text-xs text-gray-400 mb-1">{product.weightPerUnit}/{product.unit}</p>
+            <p className="text-xs text-gray-400 mb-1">{product.weightPerUnit}{hauToDonVi(product)}</p>
           )}
           <div className="flex items-center gap-2 mb-2">
             {product.salePrice ? (

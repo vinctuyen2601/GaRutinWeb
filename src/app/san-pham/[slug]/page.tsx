@@ -6,6 +6,8 @@ import OrderForm from "@/components/shared/OrderForm";
 import AddToCartButton from "@/components/shared/AddToCartButton";
 import ProductCard from "@/components/shared/ProductCard";
 import ProductHero from "@/components/shared/ProductHero";
+import { hauToDonVi } from "@/lib/donVi";
+import ProductStickyBar from "@/components/shared/ProductStickyBar";
 
 export const revalidate = 120;
 
@@ -32,7 +34,7 @@ export async function generateMetadata({
     description:
       product.seoDescription ||
       product.description ||
-      `Mua ${product.name} tại GaRutin. Giá ${formattedPrice}/${product.unit}.`,
+      `Mua ${product.name} tại GaRutin. Giá ${formattedPrice}${hauToDonVi(product)}.`,
     openGraph: {
       title: product.name,
       description: product.description || "",
@@ -154,7 +156,7 @@ export default async function ProductDetailPage({
               </h1>
               {product.weightPerUnit && (
                 <p className="text-sm text-gray-500">
-                  Trọng lượng: {product.weightPerUnit}/{product.unit}
+                  Trọng lượng: {product.weightPerUnit}{hauToDonVi(product)}
                 </p>
               )}
               <div className="flex items-center gap-3 mt-3">
@@ -166,7 +168,9 @@ export default async function ProductDetailPage({
                     {formatVND(product.price)}
                   </span>
                 )}
-                <span className="text-gray-500 text-sm">/{product.unit}</span>
+                {hauToDonVi(product) && (
+                    <span className="text-gray-500 text-sm">{hauToDonVi(product)}</span>
+                  )}
               </div>
               {product.stockStatus === "out_of_stock" && (
                 <p className="text-red-500 text-sm mt-1 font-medium">
@@ -194,7 +198,10 @@ export default async function ProductDetailPage({
               />
             )}
 
-            <OrderForm product={product} />
+            {/* Mốc để nút MUA NGAY ở thanh dính đáy cuộn tới. */}
+            <div id="form-dat-hang">
+              <OrderForm product={product} />
+            </div>
           </div>
         </div>
 
@@ -209,6 +216,10 @@ export default async function ProductDetailPage({
           </div>
         )}
       </div>
+
+      {/* Đệm để thanh mua dính đáy không che mất nội dung cuối trang */}
+      <div className="h-20 md:hidden" />
+      <ProductStickyBar product={product} />
     </>
   );
 }

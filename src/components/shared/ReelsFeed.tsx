@@ -6,6 +6,7 @@ import Link from 'next/link';
 import type { Product } from '@/lib/api';
 import type { Khung } from '@/lib/reels';
 import OrderForm from './OrderForm';
+import { hauToDonVi } from '@/lib/donVi';
 
 /**
  * Bề rộng cột nội dung.
@@ -242,7 +243,9 @@ export default function ReelsFeed({
               {k.product.salePrice != null && (
                 <span className="text-white/60 line-through text-sm">{fmt(k.product.price)}</span>
               )}
-              <span className="text-white/60 text-sm">/{k.product.unit}</span>
+              {hauToDonVi(k.product) && (
+                <span className="text-white/60 text-sm">{hauToDonVi(k.product)}</span>
+              )}
             </div>
             <button
               type="button"
