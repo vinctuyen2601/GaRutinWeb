@@ -5,6 +5,7 @@ import { useCart } from '@/lib/CartContext';
 import { hauToDonVi } from '@/lib/donVi';
 import type { Product } from '@/lib/api';
 import { giaBan, giaGach } from '@/lib/gia';
+import { ghiNhanThemGio } from '@/lib/track';
 
 const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
 
@@ -35,6 +36,7 @@ export default function ProductStickyBar({ product }: { product: Product }) {
   const themVaoGio = () => {
     if (hetHang) return;
     addToCart(product);
+    ghiNhanThemGio(product.slug);
     setDaThem(true);
     setTimeout(() => setDaThem(false), 1500);
   };

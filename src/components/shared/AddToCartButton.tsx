@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useCart } from '@/lib/CartContext';
 import type { Product } from '@/lib/api';
+import { ghiNhanThemGio } from '@/lib/track';
 
 export default function AddToCartButton({
   product,
@@ -19,6 +20,7 @@ export default function AddToCartButton({
     e.stopPropagation();
     if (isOutOfStock) return;
     addToCart(product);
+    ghiNhanThemGio(product.slug);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };

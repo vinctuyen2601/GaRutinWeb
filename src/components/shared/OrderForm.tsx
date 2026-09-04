@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { Product } from '@/lib/api';
 import { giaBan, giaGach } from '@/lib/gia';
+import { layVisitorId } from '@/lib/track';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 
@@ -35,6 +36,7 @@ export default function OrderForm({ product }: { product: Product }) {
           customerAddress: form.customerAddress,
           notes: form.notes,
           items: [{ productId: product.id, name: product.name, quantity: qty, price, unit: product.unit }],
+            visitorId: layVisitorId(),
           totalAmount: price * qty,
           source: 'web',
         }),

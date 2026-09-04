@@ -8,6 +8,7 @@ import type { Khung } from '@/lib/reels';
 import OrderForm from './OrderForm';
 import { hauToDonVi } from '@/lib/donVi';
 import { dangGiamGia, giaBan, giaGach } from '@/lib/gia';
+import { ghiNhanThemGio } from '@/lib/track';
 
 /**
  * Bề rộng cột nội dung.
@@ -136,6 +137,7 @@ export default function ReelsFeed({
    */
   const moMua = (p: Product) => {
     refs.current[dangXem]?.pause();
+    ghiNhanThemGio(p.slug);
     setDangMua(p);
   };
 

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/lib/CartContext';
 import type { CartItem } from '@/lib/CartContext';
 import { giaBan, giaGach } from '@/lib/gia';
+import { ghiNhan, layVisitorId } from '@/lib/track';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 const LAST_CUSTOMER_KEY = 'garutin_last_customer';
@@ -31,6 +32,16 @@ export default function CheckoutPage() {
       if (last.customerPhone) setForm((f) => ({ ...f, ...last } as typeof f));
     } catch {}
   }, []);
+
+  // Vào trang đặt hàng là bước "vào đặt hàng" của phễu. Ghi một lần cho mỗi
+  // sản phẩm đang có trong giỏ, dùng đường dẫn của chính sản phẩm để khớp với
+  // lượt xem — ghi theo /dat-hang thì không biết là đang định mua món nào.
+  const daGhiPheu = useRef(false);
+  useEffect(() => {
+    if (daGhiPheu.current || checkedItems.length === 0) return;
+    daGhiPheu.current = true;
+    checkedItems.forEach(i => ghiNhan('begin_checkout', `/san-pham/${i.product.slug}`));
+  }, [checkedItems]);
 
   const getItemPrice = (i: CartItem) => giaBan(i.product);
 
@@ -60,6 +71,9 @@ export default function CheckoutPage() {
           notes: form.notes,
           items,
           totalAmount: checkedTotal,
+          // Nối đơn với người đã xem trang: không có mã này thì bảng phễu đếm
+          // được đơn nhưng không biết bao nhiêu NGƯỜI đã mua.
+          visitorId: layVisitorId(),
           source: 'web',
         }),
       });

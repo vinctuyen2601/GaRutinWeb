@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, Suspense } from 'react';
 import { useSearchParams, usePathname } from 'next/navigation';
+import { layVisitorId } from '@/lib/track';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 const GA_ID = 'G-GCTB0DCD1V';
@@ -24,7 +25,7 @@ function TrackVisitInner() {
     fetch(`${API_URL}/track`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: pathname, isNewUser }),
+      body: JSON.stringify({ path: pathname, isNewUser, event: 'view', visitorId: layVisitorId() }),
     }).catch(() => {});
 
     if (typeof window.gtag === 'function') {
