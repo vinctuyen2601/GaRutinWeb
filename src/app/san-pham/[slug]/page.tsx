@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getProduct, getProducts } from "@/lib/api";
+import { getProduct, getProducts, getPosts } from "@/lib/api";
+import VideoStrip from "@/components/shared/VideoStrip";
+import PostStrip from "@/components/shared/PostStrip";
+import { dungKhung } from "@/lib/reels";
 import OrderForm from "@/components/shared/OrderForm";
 import AddToCartButton from "@/components/shared/AddToCartButton";
 import ProductCard from "@/components/shared/ProductCard";
@@ -52,9 +55,10 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [product, allProducts] = await Promise.all([
+  const [product, allProducts, allPosts] = await Promise.all([
     getProduct(slug).catch(() => null),
     getProducts().catch(() => []),
+    getPosts().then((r) => r.data).catch(() => []),
   ]);
   if (!product) notFound();
 
@@ -63,6 +67,11 @@ export default async function ProductDetailPage({
     ...otherProducts.filter((p) => p.categoryId && p.categoryId === product.categoryId),
     ...otherProducts.filter((p) => !p.categoryId || p.categoryId !== product.categoryId),
   ].slice(0, 8);
+
+  // Cùng lời gọi mà /video, trang chủ và trang bài viết dùng — chỉ số ?i= phải
+  // khớp cả bốn nơi, nếu không bấm ô này lại mở clip khác.
+  const khungVideo = dungKhung(allProducts);
+  const baiViet = allPosts.filter((p) => p.status === "published").slice(0, 4);
 
   const price = giaBan(product);
   const formatVND = (n: number) =>
@@ -216,6 +225,26 @@ export default async function ProductDetailPage({
             </div>
           </div>
         )}
+
+        {/* Video rồi mới tới bài viết.
+            Người đang xem trang sản phẩm là người đang cân nhắc mua, chưa
+            quyết. Clip quay tại trại trả lời đúng câu họ đang hỏi — "con thật
+            trông thế nào" — nên đặt trước. Bài viết là bước lùi một nhịp, dành
+            cho người còn muốn tìm hiểu thêm rồi mới quay lại mua. */}
+        {khungVideo.length > 0 && (
+          <VideoStrip
+            khung={khungVideo}
+            tieuDe="Videos"
+            toiDa={6}
+            className="mt-12"
+          />
+        )}
+
+        <PostStrip
+          baiViet={baiViet}
+          tieuDe="Tìm hiểu thêm về gà rutin"
+          className="mt-12"
+        />
       </div>
 
       {/* Đệm để thanh mua dính đáy không che mất nội dung cuối trang */}
