@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getPost, getPosts, getProducts, type Product } from "@/lib/api";
 import { dungKhung } from "@/lib/reels";
 import VideoStrip from "@/components/shared/VideoStrip";
+import ProductCard from "@/components/shared/ProductCard";
 import dayjs from "dayjs";
 
 export const revalidate = 120;
@@ -51,6 +52,9 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const khungVideo = dungKhung(sanPham);
+
+  // Lọc từ danh sách đã lấy sẵn cho phần video, không gọi API thêm lần nữa.
+  const noiBat = sanPham.filter((p) => p.isFeatured && p.isActive).slice(0, 4);
 
   const relatedPosts = allPosts
     .filter((p) => p.slug !== slug && p.status === "published")
@@ -159,6 +163,25 @@ export default async function BlogPostPage({
                 {tag}
               </span>
             ))}
+          </div>
+        )}
+
+        {/* Sản phẩm nổi bật đứng TRƯỚC video: người vừa đọc xong bài cần thấy
+            mình mua được gì đã, rồi mới tới video để xem tận mắt. Ngược lại thì
+            xem video xong vẫn phải đi tìm chỗ mua. */}
+        {noiBat.length > 0 && (
+          <div className="mt-10 pt-8 border-t">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-900">🌟 Sản phẩm nổi bật</h2>
+              <Link href="/san-pham" className="text-primary-600 text-sm font-medium hover:underline">
+                Xem tất cả →
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {noiBat.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
           </div>
         )}
 
