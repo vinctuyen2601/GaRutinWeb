@@ -11,6 +11,7 @@ import ProductCard from "@/components/shared/ProductCard";
 import ProductHero from "@/components/shared/ProductHero";
 import { hauToDonVi } from "@/lib/donVi";
 import ProductStickyBar from "@/components/shared/ProductStickyBar";
+import ReviewSection from "@/components/shared/ReviewSection";
 import { giaBan, giaGach } from "@/lib/gia";
 
 export const revalidate = 120;
@@ -214,6 +215,8 @@ export default async function ProductDetailPage({
             </div>
           </div>
         </div>
+
+        <ReviewSection product={product} />
 
         {relatedProducts.length > 0 && (
           <div className="mt-12 pt-8 border-t">

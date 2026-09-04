@@ -23,6 +23,9 @@ export type Product = {
   categoryId?: string;
   weightPerUnit?: string;
   unit: string;
+  /** Điểm trung bình từ đánh giá đã duyệt; null khi chưa có đánh giá nào. */
+  avgRating?: number | null;
+  reviewCount?: number;
   stockStatus: 'in_stock' | 'out_of_stock' | 'pre_order';
   isFeatured: boolean;
   isActive: boolean;
@@ -60,6 +63,17 @@ export const getProducts = (params?: string) =>
 
 export const getProduct = (slug: string) =>
   fetchApi<Product>(`/products/${slug}`, { revalidate: 120 });
+
+export type Review = {
+  id: string;
+  productId: string;
+  customerName: string;
+  rating: number;
+  comment?: string;
+  images?: string[];
+  video?: string | null;
+  createdAt: string;
+};
 
 export type PostsResponse = { data: Post[]; total: number; page: number; limit: number };
 
