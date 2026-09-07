@@ -237,7 +237,6 @@ export default async function ProductDetailPage({
         {khungVideo.length > 0 && (
           <VideoStrip
             khung={khungVideo}
-            tieuDe="Videos"
             toiDa={6}
             className="mt-12"
           />

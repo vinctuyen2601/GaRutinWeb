@@ -193,7 +193,6 @@ export default async function BlogPostPage({
         {khungVideo.length > 0 && (
           <VideoStrip
             khung={khungVideo}
-            tieuDe="Videos"
             toiDa={6}
             className="mt-10"
           />
