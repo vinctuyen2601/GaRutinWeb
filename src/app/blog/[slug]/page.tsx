@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getPost, getPosts, getProducts, type Product } from "@/lib/api";
 import { dungKhung } from "@/lib/reels";
 import { chonBaiLienQuan } from '@/lib/baiLienQuan';
+import { chonSanPhamLienQuan } from '@/lib/sanPhamLienQuan';
 import VideoStrip from "@/components/shared/VideoStrip";
 import ProductCard from "@/components/shared/ProductCard";
 import dayjs from "dayjs";
@@ -66,7 +67,13 @@ export default async function BlogPostPage({
   const khungVideo = dungKhung(sanPham);
 
   // Lọc từ danh sách đã lấy sẵn cho phần video, không gọi API thêm lần nữa.
-  const noiBat = sanPham.filter((p) => p.isFeatured && p.isActive).slice(0, 4);
+  // Sản phẩm chào theo NỘI DUNG bài, không phải bốn món nổi bật cố định.
+  //
+  // Trước đây bài hướng dẫn làm chuồng và bài mua gà ở TP HCM chào bán y hệt
+  // nhau, vì đây là slice(0, 4) của danh sách nổi bật. Blog mang 466 người đọc
+  // mà chỉ 165 người xem sản phẩm — chào đúng thứ họ vừa đọc là cách rẻ nhất
+  // để bớt rò rỉ ở đúng chỗ đó.
+  const noiBat = chonSanPhamLienQuan(post, sanPham, 4);
 
   const relatedPosts = chonBaiLienQuan(post, allPosts, 4);
 
