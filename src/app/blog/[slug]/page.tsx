@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getPost, getPosts, getProducts, type Product } from "@/lib/api";
 import { dungKhung } from "@/lib/reels";
+import { chonBaiLienQuan } from '@/lib/baiLienQuan';
 import VideoStrip from "@/components/shared/VideoStrip";
 import ProductCard from "@/components/shared/ProductCard";
 import dayjs from "dayjs";
@@ -46,7 +47,17 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const [post, allPosts, sanPham] = await Promise.all([
     getPost(slug).catch(() => null),
-    getPosts().then((r) => r.data).catch(() => []),
+    // Phải lấy HẾT bài, không dùng mặc định 12.
+    //
+    // Bộ chọn bài liên quan chỉ ghép được trong số bài nó nhìn thấy; để mặc
+    // định thì 78/90 bài không bao giờ có cơ hội xuất hiện, và bản sửa "đọc
+    // thêm" gần như vô nghĩa.
+    //
+    // Không tốn thêm mỗi lượt xem: fetchApi đặt revalidate 60 nên mọi trang
+    // blog dùng chung một lần tải mỗi phút. Có điều payload ~750 KB vì API trả
+    // cả nội dung bài — vượt 2 MB thì Next lặng lẽ bỏ cache, nên khi blog vượt
+    // khoảng 250 bài cần cho API một chế độ trả gọn (bỏ content).
+    getPosts('limit=500').then((r) => r.data).catch(() => []),
     // Cùng lời gọi mà /video và trang chủ dùng — chỉ số ?i= phải khớp cả ba nơi.
     getProducts().catch((): Product[] => []),
   ]);
@@ -57,9 +68,7 @@ export default async function BlogPostPage({
   // Lọc từ danh sách đã lấy sẵn cho phần video, không gọi API thêm lần nữa.
   const noiBat = sanPham.filter((p) => p.isFeatured && p.isActive).slice(0, 4);
 
-  const relatedPosts = allPosts
-    .filter((p) => p.slug !== slug && p.status === "published")
-    .slice(0, 4);
+  const relatedPosts = chonBaiLienQuan(post, allPosts, 4);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
