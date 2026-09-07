@@ -81,6 +81,45 @@ export default async function ProductDetailPage({
       currency: "VND",
     }).format(n);
 
+  /**
+   * Khai video của sản phẩm cho Google.
+   *
+   * Không có khối này thì clip chỉ là thẻ <video> do trình duyệt dựng — Google
+   * không nhận ra trang có video, nên không bao giờ xuất hiện ở tab Video hay
+   * có ảnh video kèm trong kết quả tìm kiếm.
+   *
+   * Bỏ link YouTube: chúng đã có mặt trên YouTube rồi, khai lại ở đây là khai
+   * trùng cùng một nội dung ở hai nơi.
+   *
+   * `thumbnailUrl` là trường bắt buộc. Hiện chưa có ảnh trích từ chính clip nên
+   * dùng ảnh sản phẩm — cùng con vật, cùng nội dung, chỉ không đúng khung hình
+   * đó. Muốn chuẩn thì phải cắt ảnh từ video lúc tải lên.
+   *
+   * `uploadDate` lấy ngày sửa sản phẩm gần nhất: không lưu ngày tải clip riêng,
+   * và Google cần một mốc thời gian hợp lệ hơn là không có gì.
+   */
+  const clipTuLuu = (product.videos ?? []).filter(
+    (u) => u && !/youtu\.?be|youtube\.com/i.test(u),
+  );
+  const anhDaiDien = product.images?.[0];
+  const videoJsonLd =
+    clipTuLuu.length > 0 && anhDaiDien
+      ? clipTuLuu.map((url, i) => ({
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          name: clipTuLuu.length > 1 ? `${product.name} — video ${i + 1}` : product.name,
+          description:
+            (product.description ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 300) ||
+            `Video ${product.name} quay tại trại GaRutin.`,
+          thumbnailUrl: [anhDaiDien],
+          uploadDate: product.updatedAt ?? new Date().toISOString(),
+          contentUrl: url,
+          embedUrl: `${SITE_URL}/video`,
+          isFamilyFriendly: true,
+          publisher: { "@type": "Organization", name: "GaRutin", url: SITE_URL },
+        }))
+      : [];
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -133,6 +172,13 @@ export default async function ProductDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
+      {videoJsonLd.map((v, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(v) }}
+        />
+      ))}
 
       <div className="max-w-6xl mx-auto px-4 pt-4 pb-0">
         <nav aria-label="breadcrumb" className="flex items-center gap-1.5 text-sm text-gray-500">
