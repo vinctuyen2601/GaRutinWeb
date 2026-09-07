@@ -38,10 +38,10 @@ export const metadata: Metadata = {
   ),
   title: {
     template: "%s | GaRutin - Gà Rutin Cảnh Việt Nam",
-    default: "GaRutin - Gà Rutin Cảnh Thuần Chủng, Nhiều Màu Đẹp",
+    default: "Gà Rutin TP HCM — Bán Gà Cảnh Tí Hon Thuần Chủng, Giá Tốt",
   },
   description:
-    "Chuyên cung cấp gà rutin cảnh thuần chủng — gà tí hon nhỏ nhất thế giới, nhiều màu lông đẹp, tính cách hiền lành. Phù hợp nuôi trong căn hộ, nhà phố. Giao hàng toàn quốc.",
+    "Bán gà rutin cảnh thuần chủng tại TP HCM — gà tí hon nhỏ nhất thế giới, nhiều màu, hiền, nuôi được trong căn hộ. Xem bảng giá, giao tận nơi.",
   icons: { icon: "/favicon.svg" },
   keywords: [
     "gà rutin",

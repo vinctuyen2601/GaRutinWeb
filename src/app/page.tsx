@@ -7,10 +7,29 @@ import { dungKhung } from "@/lib/reels";
 import VideoStrip from "@/components/shared/VideoStrip";
 import GallerySection from "@/components/shared/GallerySection";
 
+/*
+ * Tiêu đề và mô tả viết theo TRUY VẤN THẬT trong Search Console, không theo
+ * cách shop tự giới thiệu.
+ *
+ * Số liệu tháng 9/2026: "gà rutin" mang về 716 lượt hiển thị (61% tổng) nhưng
+ * chỉ 1 lượt nhấp — CTR 0,14%. Vị trí trung bình suy ra khoảng 5, tức đã ở
+ * trang 1, nên đó KHÔNG phải vấn đề thứ hạng mà là đoạn hiển thị không mời gọi.
+ *
+ * Trong khi đó 64% lượt nhấp đến từ nhóm truy vấn mua bán kèm địa danh:
+ * "mua gà rutin ở tphcm", "gà rutin tphcm", "bán gà rutin tphcm" — CTR ~10%.
+ * Tiêu đề cũ không có "TP HCM", không có "bán/mua/giá", tức nói bằng ngôn ngữ
+ * người bán chứ không phải từ người tìm đang gõ.
+ *
+ * Mô tả cũ dài 170 ký tự nên Google cắt đứt giữa chừng; bản mới 140 ký tự.
+ *
+ * Đây đồng thời là PHÉP THỬ: nếu sau vài tuần CTR của "gà rutin" nhích lên thì
+ * nguyên nhân đúng là đoạn hiển thị; nếu vẫn im thì đó là truy vấn tò mò
+ * (người ta xem ảnh trên trang kết quả rồi thoát) và nên thôi đầu tư vào nó.
+ */
 export const metadata: Metadata = {
-  title: "GaRutin - Gà Rutin Cảnh Thuần Chủng, Nhiều Màu Đẹp",
+  title: "Gà Rutin TP HCM — Bán Gà Cảnh Tí Hon Thuần Chủng, Giá Tốt",
   description:
-    "Chuyên cung cấp gà rutin cảnh thuần chủng — gà tí hon nhỏ nhất thế giới, nhiều màu lông đẹp, tính cách hiền lành. Phù hợp nuôi trong căn hộ, nhà phố. Giao hàng toàn quốc.",
+    "Bán gà rutin cảnh thuần chủng tại TP HCM — gà tí hon nhỏ nhất thế giới, nhiều màu, hiền, nuôi được trong căn hộ. Xem bảng giá, giao tận nơi.",
 };
 
 const faqJsonLd = {
