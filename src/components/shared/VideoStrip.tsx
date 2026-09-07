@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Khung } from '@/lib/reels';
 
@@ -19,7 +18,7 @@ import type { Khung } from '@/lib/reels';
  */
 export default function VideoStrip({
   khung,
-  tieuDe = 'Video thật tại trại',
+  tieuDe = 'Video gà rutin',
   toiDa = 10,
   className = '',
 }: {
@@ -100,15 +99,23 @@ export default function VideoStrip({
               className="relative flex-shrink-0 snap-start rounded-xl overflow-hidden bg-gray-200 no-underline w-[180px] sm:w-[150px]"
               style={{ aspectRatio: '9/16' }}
             >
-              {k.product.images?.[0] && (
-                <Image
-                  src={k.product.images[0]}
-                  alt={k.product.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 180px, 150px"
-                />
-              )}
+              {/* Khung hình THẬT của clip, không phải ảnh sản phẩm.
+                  Trước đây ô này hiện ảnh sản phẩm: khách bấm vào rồi thấy một
+                  cảnh hoàn toàn khác thứ vừa nhìn — cảm giác bị đánh tráo.
+                  #t=0.1 bảo trình duyệt nhảy tới giây 0.1 rồi vẽ khung hình đó;
+                  nhiều clip có khung đầu tiên đen thui, và trên iOS thì không
+                  có mốc thời gian nào thì máy không vẽ gì cả.
+                  preload="metadata" chỉ tải phần đầu tệp, đủ để lấy một khung
+                  hình — không kéo cả clip về cho một cái ô nhỏ. */}
+              <video
+                src={`${k.videoUrl}#t=0.1`}
+                preload="metadata"
+                muted
+                playsInline
+                tabIndex={-1}
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+              />
               <span className="absolute inset-0 flex items-center justify-center">
                 <span className="w-11 h-11 rounded-full bg-black/55 flex items-center justify-center">
                   <span className="ml-1 border-y-[7px] border-y-transparent border-l-[12px] border-l-white" />

@@ -210,7 +210,9 @@ export default function ReelsFeed({
             }}
             data-i={i}
             src={k.videoUrl}
-            poster={k.product.images?.[0]}
+            // Không đặt poster bằng ảnh sản phẩm: khách thấy một tấm ảnh rồi
+            // clip chạy ra cảnh khác, như bị đánh tráo. Để trống thì trình
+            // duyệt tự vẽ khung hình đầu của chính clip đó.
             loop
             muted
             playsInline
