@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, Suspense } from 'react';
 import { useSearchParams, usePathname } from 'next/navigation';
-import { layVisitorId } from '@/lib/track';
+import { layVisitorId, layNguon } from '@/lib/track';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 const GA_ID = 'G-GCTB0DCD1V';
@@ -25,7 +25,15 @@ function TrackVisitInner() {
     fetch(`${API_URL}/track`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: pathname, isNewUser, event: 'view', visitorId: layVisitorId() }),
+      // layNguon() đọc utm từ URL và ghi nhớ 30 ngày, nên lượt xem thứ hai trở
+      // đi của cùng khách vẫn mang đúng nguồn dù URL không còn tham số utm.
+      body: JSON.stringify({
+        path: pathname,
+        isNewUser,
+        event: 'view',
+        visitorId: layVisitorId(),
+        ...layNguon(),
+      }),
     }).catch(() => {});
 
     if (typeof window.gtag === 'function') {

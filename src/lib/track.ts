@@ -9,6 +9,21 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 
 const VISITOR_KEY = 'garutin_visitor_id';
+const NGUON_KEY = 'garutin_nguon';
+
+/** Giữ nguồn 30 ngày — đủ dài cho chu kỳ cân nhắc mua một cặp gà cảnh. */
+const HAN_NGUON_MS = 30 * 24 * 60 * 60 * 1000;
+
+export type Nguon = {
+  platform?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmContent?: string;
+  referrer?: string;
+};
+
+type NguonLuu = Nguon & { luuLuc: number };
 
 export type BuocPheu = 'view' | 'add_to_cart' | 'begin_checkout';
 
@@ -42,6 +57,68 @@ export function layVisitorId(): string {
   return moi;
 }
 
+/** Referrer chỉ tính khi đến từ tên miền KHÁC — điều hướng trong web không phải một nguồn. */
+function referrerNgoai(): string | undefined {
+  try {
+    const r = document.referrer;
+    if (!r) return undefined;
+    return new URL(r).hostname === window.location.hostname ? undefined : r;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Nguồn của chính lần truy cập này, đọc từ URL và referrer. */
+function nguonHienTai(): Nguon {
+  const q = new URLSearchParams(window.location.search);
+  const lay = (k: string) => q.get(k) || undefined;
+  return {
+    platform: lay('platform') || lay('utm_source'),
+    utmSource: lay('utm_source'),
+    utmMedium: lay('utm_medium'),
+    utmCampaign: lay('utm_campaign'),
+    utmContent: lay('utm_content'),
+    referrer: referrerNgoai(),
+  };
+}
+
+/**
+ * Nguồn được ghi công cho khách này.
+ *
+ * Quy tắc: lần gần nhất khách đến từ một nguồn bên ngoài rõ ràng (có utm hoặc
+ * có referrer ngoài) thì nguồn đó được ghi công và giữ 30 ngày. Truy cập trực
+ * tiếp và điều hướng trong web KHÔNG ghi đè.
+ *
+ * Đây là điểm mấu chốt của cả tính năng: khách bấm quảng cáo hôm nay, ba hôm
+ * sau gõ thẳng địa chỉ vào mua thì công vẫn thuộc về quảng cáo. Nếu để truy cập
+ * trực tiếp ghi đè thì gần như lượt nào cũng thành "trực tiếp", và tiền quảng
+ * cáo trông như không mang lại gì.
+ */
+export function layNguon(): Nguon {
+  if (typeof window === 'undefined') return {};
+
+  const bayGio = nguonHienTai();
+  const coNguonNgoai = Boolean(bayGio.utmSource || bayGio.referrer);
+
+  let daLuu: NguonLuu | null = null;
+  try {
+    const raw = docLocal(NGUON_KEY);
+    const parsed = raw ? (JSON.parse(raw) as NguonLuu) : null;
+    if (parsed && Date.now() - parsed.luuLuc < HAN_NGUON_MS) daLuu = parsed;
+  } catch {
+    // Dữ liệu hỏng thì coi như chưa có — đo đạc không được làm hỏng việc mua hàng.
+  }
+
+  if (!coNguonNgoai) {
+    if (!daLuu) return bayGio;
+    const { luuLuc: _bo, ...nguon } = daLuu;
+    return nguon;
+  }
+
+  ghiLocal(NGUON_KEY, JSON.stringify({ ...bayGio, luuLuc: Date.now() }));
+  return bayGio;
+}
+
 /** Gửi một bước của phễu. Lỗi mạng bị nuốt có chủ ý. */
 export function ghiNhan(buoc: BuocPheu, duongDan?: string): void {
   if (typeof window === 'undefined') return;
@@ -49,6 +126,9 @@ export function ghiNhan(buoc: BuocPheu, duongDan?: string): void {
     path: duongDan ?? window.location.pathname,
     event: buoc,
     visitorId: layVisitorId(),
+    // Gửi kèm cả ở bước phễu chứ không chỉ ở lượt xem: có vậy mới trả lời được
+    // "chiến dịch nào ra ĐƠN", chứ không chỉ "chiến dịch nào ra lượt xem".
+    ...layNguon(),
   });
   try {
     // sendBeacon sống sót khi trang đang chuyển đi — "vào đặt hàng" và "thêm
