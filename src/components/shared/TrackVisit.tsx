@@ -2,6 +2,7 @@
 import { useEffect, Suspense } from 'react';
 import { useSearchParams, usePathname } from 'next/navigation';
 import { layVisitorId, layNguon } from '@/lib/track';
+import { CO_404 } from './Danh404';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 const GA_ID = 'G-GCTB0DCD1V';
@@ -19,6 +20,13 @@ function TrackVisitInner() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Trang 404 không phải một lượt xem nội dung. Đọc rồi xoá cờ ngay: rời khỏi
+    // trang 404 sang trang thật thì lượt sau phải được ghi bình thường.
+    const w = window as unknown as Record<string, boolean>;
+    const la404 = w[CO_404] === true;
+    w[CO_404] = false;
+    if (la404) return;
+
     const isNewUser = !localStorage.getItem(VISITED_KEY);
     if (isNewUser) localStorage.setItem(VISITED_KEY, '1');
 
