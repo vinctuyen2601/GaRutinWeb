@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { Product } from '@/lib/api';
 import { giaBan, giaGach } from '@/lib/gia';
-import { layVisitorId } from '@/lib/track';
+import { layVisitorId, ghiNhan } from '@/lib/track';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 
@@ -17,6 +17,25 @@ export default function OrderForm({ product }: { product: Product }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+
+  /**
+   * Bước "vào đặt hàng" của phễu, ghi khi khách CHẠM VÀO form lần đầu.
+   *
+   * Trước đây bước này chỉ được ghi ở trang /dat-hang, nên hai đường đặt hàng
+   * còn lại — form ngay dưới trang sản phẩm và tấm đặt hàng trong luồng video —
+   * hoàn toàn vô hình: bảng phễu hiện "thêm giỏ 1 → vào đặt hàng 0 → mua 1",
+   * đọc lên như thể khâu đặt hàng đang hỏng.
+   *
+   * Ghi lúc chạm chứ không lúc hiện form: trên trang sản phẩm form nằm sẵn
+   * trong trang, ai mở trang cũng thấy — ghi lúc hiện thì cột này bằng đúng cột
+   * lượt xem và không còn nói lên điều gì.
+   */
+  const daGhiPheu = useRef(false);
+  const chamVaoForm = () => {
+    if (daGhiPheu.current) return;
+    daGhiPheu.current = true;
+    ghiNhan('begin_checkout', `/san-pham/${product.slug}`);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +81,13 @@ export default function OrderForm({ product }: { product: Product }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      // Bắt ở cấp form: focus nổi bọt lên đây nên mọi ô đều tính, và thêm ô mới
+      // sau này cũng không phải nhớ nối lại.
+      onFocusCapture={chamVaoForm}
+      className="bg-white border border-gray-200 rounded-xl p-5 space-y-4"
+    >
       <h2 className="text-lg font-bold text-gray-900">🛒 Đặt hàng ngay</h2>
 
       {error && <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">{error}</div>}
