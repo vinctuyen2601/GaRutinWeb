@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPost, getPosts, getProducts, type Product } from "@/lib/api";
@@ -63,6 +63,23 @@ export default async function BlogPostPage({
     getProducts().catch((): Product[] => []),
   ]);
   if (!post) notFound();
+
+  /*
+   * Bài đã gộp sang bài khác → chuyển hướng 301 vĩnh viễn.
+   *
+   * Dùng permanentRedirect chứ không phải redirect: 301 dồn tín hiệu SEO của
+   * trang cũ về trang mới, còn 302 (mặc định của redirect) nói với Google rằng
+   * đây chỉ là tạm thời nên nó giữ nguyên trang cũ trong chỉ mục — tức mất đúng
+   * cái lợi duy nhất của việc gộp thay vì xoá.
+   *
+   * Nằm SAU Promise.all nên dữ liệu sản phẩm và bài viết vẫn được tải dù trang
+   * này sẽ chuyển hướng. Cố ý chấp nhận: muốn tránh thì phải tách lời gọi lấy
+   * bài ra chạy trước rồi mới gọi phần còn lại, tức thêm một vòng chờ tuần tự
+   * cho MỌI trang bình thường chỉ để tiết kiệm cho ~20 trang chuyển hướng mà
+   * gần như chỉ có Google ghé. Làm chậm trường hợp thường gặp để tối ưu trường
+   * hợp hiếm là đánh đổi sai chiều.
+   */
+  if (post.redirectTo) permanentRedirect(`/blog/${post.redirectTo}`);
 
   const khungVideo = dungKhung(sanPham);
 

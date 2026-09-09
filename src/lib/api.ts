@@ -48,6 +48,8 @@ export type Post = {
   content?: string;
   seoTitle?: string;
   seoDescription?: string;
+  /** Slug bài đích khi bài này đã được gộp sang bài khác. */
+  redirectTo?: string | null;
 };
 
 export type Category = {
