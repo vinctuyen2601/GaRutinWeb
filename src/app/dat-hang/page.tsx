@@ -10,6 +10,42 @@ import { ghiNhan, layVisitorId } from '@/lib/track';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 const LAST_CUSTOMER_KEY = 'garutin_last_customer';
+const PHONE = process.env.NEXT_PUBLIC_PHONE || '0901234567';
+const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
+
+/**
+ * Những điều khách còn phân vân ngay trước lúc bấm đặt.
+ *
+ * Mua gà sống qua mạng là mua thứ có thể chết trên đường, nên nỗi lo ở đây
+ * khác hẳn mua đồ thường: gà có khỏe không, chết dọc đường thì ai chịu, trả
+ * tiền trước có mất không.
+ *
+ * TỪNG DÒNG LẤY TỪ CHÍNH SÁCH ĐANG CÓ ở /chinh-sach-hoan-tra, không phải khẩu
+ * hiệu nghĩ ra cho đẹp. Hứa ở đây mà chính sách không có thì thành ra lừa
+ * khách, và người bị mắng là chủ trại chứ không phải trang web.
+ */
+const CAM_KET = [
+  {
+    icon: '💵',
+    tieuDe: 'Nhận gà rồi mới trả tiền',
+    moTa: 'Thanh toán khi nhận hàng (COD) — không đặt cọc trước.',
+  },
+  {
+    icon: '🐣',
+    tieuDe: 'Gà khỏe, đúng mô tả',
+    moTa: 'Trại cam kết giao gà khỏe mạnh, đúng như mô tả và được đóng gói an toàn.',
+  },
+  {
+    icon: '📦',
+    tieuDe: 'Gà chết do đóng gói, trại chịu 100%',
+    moTa: 'Giao sai hàng hoặc gà chết vì khâu đóng gói thì trại chịu toàn bộ chi phí.',
+  },
+  {
+    icon: '↩️',
+    tieuDe: 'Đổi trả trong 3 ngày',
+    moTa: 'Kể từ lúc nhận hàng, theo chính sách hoàn trả.',
+  },
+];
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
@@ -193,7 +229,8 @@ export default function CheckoutPage() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex-1 w-full bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <div className="flex-1 w-full">
+        <form onSubmit={handleSubmit} className="w-full bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
           {error && <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">{error}</div>}
 
           <input
@@ -236,6 +273,48 @@ export default function CheckoutPage() {
           </button>
           <p className="text-xs text-gray-400 text-center">Thanh toán khi nhận hàng (COD). Chúng tôi sẽ gọi xác nhận trong vòng 24h.</p>
         </form>
+
+        {/* Đặt DƯỚI form, không phải trên: trên thì nó đẩy ô nhập xuống dưới
+            màn hình đầu tiên, khách phải cuộn mới thấy chỗ điền. */}
+        <div className="mt-4 bg-white border border-gray-200 rounded-2xl p-5">
+          <div className="text-sm font-bold text-gray-900 mb-3">Đặt ở GaRutin, bạn được gì</div>
+          <ul className="space-y-3">
+            {CAM_KET.map((c) => (
+              <li key={c.tieuDe} className="flex gap-3">
+                <span className="text-lg leading-none mt-0.5">{c.icon}</span>
+                <span className="text-sm">
+                  <span className="font-semibold text-gray-800 block">{c.tieuDe}</span>
+                  <span className="text-gray-500">{c.moTa}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600">
+            Còn băn khoăn? Gọi{' '}
+            <a href={`tel:${PHONE}`} className="text-primary-600 font-semibold hover:underline">
+              {PHONE}
+            </a>{' '}
+            hoặc nhắn{' '}
+            <a
+              href={`https://zalo.me/${ZALO}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary-600 font-semibold hover:underline"
+            >
+              Zalo
+            </a>{' '}
+            trước khi đặt cũng được.
+            <div className="mt-1 text-xs text-gray-400">
+              Xem đầy đủ{' '}
+              <Link href="/chinh-sach-hoan-tra" className="underline hover:text-gray-600">
+                chính sách hoàn trả
+              </Link>
+              .
+            </div>
+          </div>
+        </div>
+        </div>
       </div>
     </div>
   );
