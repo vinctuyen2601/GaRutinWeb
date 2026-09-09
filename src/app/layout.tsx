@@ -8,6 +8,8 @@ import StickyBottomBar from "@/components/shared/StickyBottomBar";
 import TrackVisit from "@/components/shared/TrackVisit";
 import CartSidebar from "@/components/shared/CartSidebar";
 import { CartProvider } from "@/lib/CartContext";
+import { LienHeProvider } from "@/lib/LienHeContext";
+import { layLienHe } from "@/lib/lienHe";
 
 /**
  * Font chữ cho toàn web.
@@ -67,14 +69,14 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
+const dungJsonLd = (lienHe: { phone: string; address: string; zalo: string }) => ({
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: "GaRutin - Gà Rutin Cảnh Thuần Chủng",
   description:
     "Chuyên cung cấp gà rutin cảnh thuần chủng, nhiều màu lông đẹp, giao hàng toàn quốc",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com",
-  telephone: process.env.NEXT_PUBLIC_PHONE || "",
+  telephone: lienHe.phone,
   image: `${
     process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com"
   }/logo.svg`,
@@ -82,16 +84,24 @@ const jsonLd = {
   address: {
     "@type": "PostalAddress",
     addressCountry: "VN",
-    addressLocality: "Việt Nam",
+    // Địa chỉ thật từ CMS: Google hiển thị mục doanh nghiệp địa phương theo
+    // trường này, ghi trống chung chung thì không lên được tìm kiếm quanh đây.
+    streetAddress: lienHe.address,
+    addressLocality: lienHe.address,
   },
-  sameAs: [`https://zalo.me/${process.env.NEXT_PUBLIC_ZALO_PHONE || ""}`],
-};
+  sameAs: [`https://zalo.me/${lienHe.zalo}`],
+});
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Lấy MỘT lần ở đây rồi truyền xuống: header, footer, thanh dính đáy và
+  // trang đặt hàng đều cần cùng bộ số này.
+  const lienHe = await layLienHe();
+  const jsonLd = dungJsonLd(lienHe);
+
   return (
     <html lang="vi" className={beVietnamPro.variable}>
       <head>
@@ -101,13 +111,15 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-white text-gray-900 antialiased font-sans">
+        <LienHeProvider giaTri={lienHe}>
         <CartProvider>
-          <SiteHeader />
+          <SiteHeader lienHe={lienHe} />
           <main className="min-h-screen pb-20 md:pb-0">{children}</main>
-          <SiteFooter />
+          <SiteFooter lienHe={lienHe} />
           <StickyBottomBar />
           <CartSidebar />
         </CartProvider>
+        </LienHeProvider>
         <TrackVisit />
         {/* Google tag — loads gtag.js once for all properties */}
         <Script

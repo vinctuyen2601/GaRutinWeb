@@ -7,11 +7,10 @@ import { useCart } from '@/lib/CartContext';
 import type { CartItem } from '@/lib/CartContext';
 import { giaBan, giaGach } from '@/lib/gia';
 import { ghiNhan, layVisitorId } from '@/lib/track';
+import { useLienHe } from '@/lib/LienHeContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 const LAST_CUSTOMER_KEY = 'garutin_last_customer';
-const PHONE = process.env.NEXT_PUBLIC_PHONE || '0901234567';
-const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
 
 /**
  * Những điều khách còn phân vân ngay trước lúc bấm đặt.
@@ -54,6 +53,7 @@ type CustomerCache = { customerName: string; customerPhone: string; customerAddr
 
 export default function CheckoutPage() {
   const { state, checkedItems, checkedTotal, clearCart } = useCart();
+  const { phone: PHONE, zalo: ZALO } = useLienHe();
   const [form, setForm] = useState({ customerName: '', customerPhone: '', customerAddress: '', notes: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

@@ -6,8 +6,8 @@ import { hauToDonVi } from '@/lib/donVi';
 import type { Product } from '@/lib/api';
 import { giaBan, giaGach } from '@/lib/gia';
 import { ghiNhanThemGio } from '@/lib/track';
+import { useLienHe } from '@/lib/LienHeContext';
 
-const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
 
 const formatVND = (n: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
@@ -29,6 +29,7 @@ const formatVND = (n: number) =>
  */
 export default function ProductStickyBar({ product }: { product: Product }) {
   const { addToCart } = useCart();
+  const { zalo: ZALO } = useLienHe();
   const [daThem, setDaThem] = useState(false);
   const hetHang = product.stockStatus === 'out_of_stock';
   const gia = giaBan(product);

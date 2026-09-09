@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
 import ContactForm from './ContactForm';
+import { layLienHe } from '@/lib/lienHe';
 
 export const metadata: Metadata = {
   title: 'Liên hệ - Tư vấn & Mua gà rutin cảnh',
   description: 'Liên hệ tư vấn và mua gà rutin cảnh thuần chủng qua Zalo hoặc điện thoại. Hỗ trợ chọn giống, màu lông, cách nuôi. Giao hàng toàn quốc.',
 };
 
-const PHONE = process.env.NEXT_PUBLIC_PHONE || '0901234567';
-const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { phone: PHONE, zalo: ZALO } = await layLienHe();
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-2 text-center">📞 Liên hệ & Tư vấn</h1>

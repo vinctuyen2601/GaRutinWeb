@@ -1,9 +1,8 @@
 'use client';
+import { useLienHe } from '@/lib/LienHeContext';
 
 import { usePathname } from 'next/navigation';
 
-const PHONE = process.env.NEXT_PUBLIC_PHONE || '0901234567';
-const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
 
 /**
  * Trang nào KHÔNG dùng thanh liên hệ chung này.
@@ -17,6 +16,7 @@ const KHONG_HIEN = (duongDan: string) =>
   /^\/san-pham\/[^/]+/.test(duongDan) || duongDan === '/dat-hang' || duongDan === '/gio-hang';
 
 export default function StickyBottomBar() {
+  const { phone: PHONE, zalo: ZALO } = useLienHe();
   const duongDan = usePathname();
   if (KHONG_HIEN(duongDan ?? '')) return null;
 

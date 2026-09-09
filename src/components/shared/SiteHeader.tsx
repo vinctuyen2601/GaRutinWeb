@@ -2,10 +2,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import CartIcon from './CartIcon';
 
-const PHONE = process.env.NEXT_PUBLIC_PHONE || '0901234567';
-const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
+import type { ThongTinLienHe } from '@/lib/lienHe';
 
-export default function SiteHeader() {
+export default function SiteHeader({ lienHe }: { lienHe: ThongTinLienHe }) {
+  const { phone: PHONE, zalo: ZALO } = lienHe;
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">

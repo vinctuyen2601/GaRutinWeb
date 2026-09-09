@@ -6,6 +6,7 @@ import ProductCard from "@/components/shared/ProductCard";
 import { dungKhung } from "@/lib/reels";
 import VideoStrip from "@/components/shared/VideoStrip";
 import GallerySection from "@/components/shared/GallerySection";
+import { layLienHe } from "@/lib/lienHe";
 
 /*
  * Tiêu đề và mô tả viết theo TRUY VẤN THẬT trong Search Console, không theo
@@ -65,6 +66,7 @@ const faqJsonLd = {
 };
 
 export default async function HomePage() {
+  const { phone, zalo } = await layLienHe();
   const [products, posts, gallery, tatCaSanPham] = await Promise.all([
     getProducts("featured=true&limit=8").catch(() => []),
     getPosts("limit=3").then((r) => r.data).catch(() => []),
@@ -107,7 +109,7 @@ export default async function HomePage() {
             </Link>
             <a
               href={`https://zalo.me/${
-                process.env.NEXT_PUBLIC_ZALO_PHONE || "0901234567"
+                zalo
               }`}
               target="_blank"
               rel="noopener noreferrer"
@@ -321,7 +323,7 @@ export default async function HomePage() {
 
       <GallerySection
         items={gallery}
-        zaloPhone={process.env.NEXT_PUBLIC_ZALO_PHONE || "0901234567"}
+        zaloPhone={zalo}
       />
 
       {/* CTA */}
@@ -335,14 +337,14 @@ export default async function HomePage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
-            href={`tel:${process.env.NEXT_PUBLIC_PHONE || "0901234567"}`}
+            href={`tel:${phone}`}
             className="bg-white text-primary-700 font-bold px-6 py-3 rounded-xl hover:bg-primary-50 transition-colors"
           >
             📞 Gọi ngay
           </a>
           <a
             href={`https://zalo.me/${
-              process.env.NEXT_PUBLIC_ZALO_PHONE || "0901234567"
+              zalo
             }`}
             target="_blank"
             rel="noopener noreferrer"

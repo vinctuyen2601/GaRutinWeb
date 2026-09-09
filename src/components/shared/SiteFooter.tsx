@@ -1,31 +1,11 @@
 import Link from 'next/link';
-import { getSiteConfig } from '@/lib/api';
+import type { ThongTinLienHe } from '@/lib/lienHe';
 
-const PHONE = process.env.NEXT_PUBLIC_PHONE || '0901234567';
-const ZALO = process.env.NEXT_PUBLIC_ZALO_PHONE || '0901234567';
 
-export default async function SiteFooter() {
-  /**
-   * Địa chỉ lấy từ cấu hình trong CMS, không viết cứng.
-   *
-   * Trước đây footer ghi "Việt Nam" — đúng nhưng vô nghĩa với khách đang cân
-   * nhắc mua gà sống: họ muốn biết trại ở đâu để ước chừng đường giao. Trong
-   * CMS đã có sẵn địa chỉ thật, chỉ là chưa ai nối vào.
-   *
-   * Hỏng API thì vẫn phải dựng được footer, nên rơi về chuỗi cũ chứ không để
-   * trang trắng chỉ vì một dòng địa chỉ.
-   *
-   * CHƯA lấy phone/zalo từ đây: hai giá trị đó trong CMS còn là số mẫu
-   * 0901234567, trong khi web đang chạy số thật từ biến môi trường. Nối vào
-   * lúc này là đăng nhầm số điện thoại lên toàn bộ trang.
-   */
-  let diaChi = 'Việt Nam';
-  try {
-    const cauHinh = await getSiteConfig();
-    if (cauHinh?.address?.trim()) diaChi = cauHinh.address.trim();
-  } catch {
-    // Giữ chuỗi mặc định.
-  }
+export default function SiteFooter({ lienHe }: { lienHe: ThongTinLienHe }) {
+  // Cấu hình lấy một lần ở layout rồi truyền xuống, không tự gọi API nữa:
+  // header và footer cùng một trang mà gọi hai lần thì có lúc lệch nhau.
+  const { phone: PHONE, zalo: ZALO, address: diaChi } = lienHe;
 
   return (
     <footer className="bg-primary-900 text-white py-10">
