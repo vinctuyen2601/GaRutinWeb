@@ -27,10 +27,26 @@ import { layLienHe } from "@/lib/lienHe";
  * nguyên nhân đúng là đoạn hiển thị; nếu vẫn im thì đó là truy vấn tò mò
  * (người ta xem ảnh trên trang kết quả rồi thoát) và nên thôi đầu tư vào nó.
  */
+/**
+ * Tiêu đề mở bằng ĐỊNH NGHĨA, không mở bằng "Bán ... TP HCM".
+ *
+ * "gà rutin" trống trơn là truy vấn lớn nhất của shop: 1.048 hiển thị trong 90
+ * ngày, chiếm 28% toàn bộ lưu lượng tìm kiếm. Nhưng chỉ 5 lượt nhấp — CTR
+ * 0,48%, trong khi hạng 9,4 thì mức thường thấy là 1,5–2%, tức khoảng 16 nhấp.
+ *
+ * Người gõ trống trơn như vậy phần lớn CHƯA BIẾT con này là gì; họ đang tìm
+ * hiểu chứ chưa tìm mua. Tiêu đề mở bằng "TP HCM — Bán ... Giá Tốt" đọc như một
+ * quảng cáo địa phương nên họ lướt qua. Đây là lệch Ý ĐỊNH tìm kiếm, không phải
+ * lệch thứ hạng.
+ *
+ * Mô tả dùng số liệu thật lấy từ bài "50 Câu Hỏi Thường Gặp" của chính trại —
+ * 50–70g, 7–10cm, 3–5 năm, hơn 20 màu — để trả lời ngay câu "con này là gì"
+ * trên trang kết quả, trước cả khi khách bấm vào.
+ */
 export const metadata: Metadata = {
-  title: "Gà Rutin TP HCM — Bán Gà Cảnh Tí Hon Thuần Chủng, Giá Tốt",
+  title: "Gà Rutin — Gà Cảnh Nhỏ Nhất Thế Giới, Đặc Điểm & Giá Bán",
   description:
-    "Bán gà rutin cảnh thuần chủng tại TP HCM — gà tí hon nhỏ nhất thế giới, nhiều màu, hiền, nuôi được trong căn hộ. Xem bảng giá, giao tận nơi.",
+    "Gà rutin nặng 50–70g, cao 7–10cm, sống 3–5 năm, hơn 20 màu lông. Hiền, ít mùi, nuôi được trong căn hộ. Xem đặc điểm, cách nuôi và bảng giá tại trại.",
 };
 
 const faqJsonLd = {

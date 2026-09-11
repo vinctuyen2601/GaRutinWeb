@@ -40,10 +40,10 @@ export const metadata: Metadata = {
   ),
   title: {
     template: "%s | GaRutin - Gà Rutin Cảnh Việt Nam",
-    default: "Gà Rutin TP HCM — Bán Gà Cảnh Tí Hon Thuần Chủng, Giá Tốt",
+    default: "Gà Rutin — Gà Cảnh Nhỏ Nhất Thế Giới, Đặc Điểm & Giá Bán",
   },
   description:
-    "Bán gà rutin cảnh thuần chủng tại TP HCM — gà tí hon nhỏ nhất thế giới, nhiều màu, hiền, nuôi được trong căn hộ. Xem bảng giá, giao tận nơi.",
+    "Gà rutin nặng 50–70g, cao 7–10cm, sống 3–5 năm, hơn 20 màu lông. Hiền, ít mùi, nuôi được trong căn hộ. Xem đặc điểm, cách nuôi và bảng giá tại trại.",
   icons: { icon: "/favicon.svg" },
   keywords: [
     "gà rutin",
