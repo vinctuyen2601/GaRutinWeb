@@ -35,6 +35,7 @@ export async function generateMetadata({
     currency: "VND",
   }).format(price);
   return {
+    alternates: { canonical: `/san-pham/${slug}` },
     title: product.seoTitle || `${product.name} - GaRutin`,
     description:
       product.seoDescription ||

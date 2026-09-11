@@ -44,6 +44,7 @@ import { layLienHe } from "@/lib/lienHe";
  * trên trang kết quả, trước cả khi khách bấm vào.
  */
 export const metadata: Metadata = {
+  alternates: { canonical: "/" },
   title: "Gà Rutin — Gà Cảnh Nhỏ Nhất Thế Giới, Đặc Điểm & Giá Bán",
   description:
     "Gà rutin nặng 50–70g, cao 7–10cm, sống 3–5 năm, hơn 20 màu lông. Hiền, ít mùi, nuôi được trong căn hộ. Xem đặc điểm, cách nuôi và bảng giá tại trại.",

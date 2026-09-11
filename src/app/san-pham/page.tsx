@@ -3,6 +3,7 @@ import { getProducts, getCategories } from '@/lib/api';
 import ProductCard from '@/components/shared/ProductCard';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/san-pham' },
   title: 'Mua Gà Rutin Cảnh - Nhiều Màu Lông, Thuần Chủng',
   description: 'Các giống gà rutin cảnh thuần chủng: màu xanh, nâu, trắng, bạc, maroon... Con đực màu sắc rực rỡ, tính cách hiền lành, phù hợp nuôi trong nhà. Giao hàng toàn quốc.',
   keywords: ['mua gà rutin cảnh', 'gà rutin màu xanh', 'gà rutin màu trắng', 'gà rutin thuần chủng', 'giá gà rutin'],

@@ -55,9 +55,14 @@ export const metadata: Metadata = {
     "mua gà rutin",
     "gà rutin nhiều màu",
   ],
-  alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com",
-  },
+  // KHÔNG đặt `alternates.canonical` ở đây. Metadata khai trong layout gốc
+  // được MỌI route kế thừa, nên một canonical trỏ về SITE_URL biến từng trang
+  // sản phẩm và từng bài viết thành "bản trùng của trang chủ" trong mắt Google
+  // — tự tay bảo nó đừng lập chỉ mục mình. Đã xảy ra thật: cả 20 trang sản
+  // phẩm và 69 bài viết đều khai canonical về trang chủ.
+  //
+  // Mỗi route tự khai canonical của nó, đường dẫn tương đối so với
+  // metadataBase. Đừng đưa canonical trở lại tầng này.
   openGraph: {
     type: "website",
     locale: "vi_VN",

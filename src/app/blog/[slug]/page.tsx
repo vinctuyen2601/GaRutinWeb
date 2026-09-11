@@ -27,6 +27,7 @@ export async function generateMetadata({
   const post = await getPost(slug).catch(() => null);
   if (!post) return {};
   return {
+    alternates: { canonical: `/blog/${slug}` },
     title: post.seoTitle || post.title,
     description: post.seoDescription || post.excerpt || "",
     openGraph: {

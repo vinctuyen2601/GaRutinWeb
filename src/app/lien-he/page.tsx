@@ -3,6 +3,7 @@ import ContactForm from './ContactForm';
 import { layLienHe } from '@/lib/lienHe';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/lien-he' },
   title: 'Liên hệ - Tư vấn & Mua gà rutin cảnh',
   description: 'Liên hệ tư vấn và mua gà rutin cảnh thuần chủng qua Zalo hoặc điện thoại. Hỗ trợ chọn giống, màu lông, cách nuôi. Giao hàng toàn quốc.',
 };

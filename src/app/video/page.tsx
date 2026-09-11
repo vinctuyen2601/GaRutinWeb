@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description: 'Clip thật quay tại trang trại, xem và đặt hàng ngay.',
   // Trang này gần như không có nội dung chữ để xếp hạng, và mỗi khung đều dẫn
   // về trang sản phẩm tương ứng — nơi Google nên gửi người tìm tới.
+  alternates: { canonical: '/video' },
   robots: { index: false, follow: true },
 };
 

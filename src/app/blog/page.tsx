@@ -8,6 +8,7 @@ import { giaBan, giaGach } from '@/lib/gia';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/blog' },
   title: 'Blog - Kinh Nghiệm Nuôi Gà Rutin',
   description: 'Chia sẻ kinh nghiệm nuôi gà rutin, kỹ thuật chăm sóc, phòng bệnh và nhiều hơn nữa từ trang trại GaRutin.',
 };
