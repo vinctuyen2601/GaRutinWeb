@@ -162,6 +162,16 @@ export default function ProductHero({
 
       {media.length > 1 && (
         <div className="flex gap-2 overflow-x-auto">
+          {/*
+            Thumbnail có alt thật chứ không phải alt rỗng: khung lớn chỉ dựng
+            ẢNH ĐANG XEM, nên mọi ảnh còn lại của sản phẩm chỉ tồn tại ở dải
+            này. Để alt rỗng là chúng vô hình với Google Images — tải 6 ảnh lên
+            thì 5 ảnh không bao giờ được lập chỉ mục.
+
+            Không hại cho trình đọc màn hình: nút bọc ngoài đã có aria-label,
+            mà aria-label đè lên nội dung bên trong nên alt này không bị đọc
+            thành hai lần.
+          */}
           {media.map((m, i) => (
             <button
               key={`${m.type}-${m.url}`}
@@ -180,7 +190,7 @@ export default function ProductHero({
                   {getYouTubeId(m.url) ? (
                     <Image
                       src={youtubeThumb(getYouTubeId(m.url)!)}
-                      alt=""
+                      alt={`${name} — video ${i + 1}`}
                       fill
                       className="object-cover"
                       sizes="80px"
@@ -202,7 +212,7 @@ export default function ProductHero({
                   </span>
                 </>
               ) : (
-                <Image src={m.url} alt="" fill className="object-cover" sizes="80px" />
+                <Image src={m.url} alt={`${name} — ảnh ${i + 1}`} fill className="object-cover" sizes="80px" />
               )}
             </button>
           ))}
