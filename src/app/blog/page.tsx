@@ -101,12 +101,12 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
             ))}
           </div>
 
+          {/* flex-wrap là bắt buộc, không phải trang trí.
+              Blog có 69 bài chia 12 bài/trang = 6 trang, nên hàng dưới dựng 6 nút
+              số cộng nút "Sau →". Đo ở khổ 360px (Android phổ thông): hàng rộng
+              368px, tràn 8px và làm CẢ TRANG cuộn ngang được — lỗi lan ra mọi
+              phần khác chứ không chỉ chỗ phân trang. Càng viết thêm bài càng tràn to. */}
           {totalPages > 1 && (
-            {/* flex-wrap là bắt buộc, không phải trang trí.
-                Blog có 69 bài chia 12 bài/trang = 6 trang, nên hàng này dựng 6 nút
-                số cộng nút "Sau →". Đo ở khổ 360px (Android phổ thông): hàng rộng
-                368px, tràn 8px và làm CẢ TRANG cuộn ngang được — lỗi lan ra mọi
-                phần khác chứ không chỉ chỗ phân trang. Càng nhiều bài càng tràn to. */}
             <div className="flex flex-wrap justify-center items-center gap-2 mt-10">
               {page > 1 && (
                 <Link href={pageHref(page - 1)} className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
