@@ -39,7 +39,18 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://garutin.com"
   ),
   title: {
-    template: "%s | GaRutin - Gà Rutin Cảnh Việt Nam",
+    /*
+     * Đuôi CỐ Ý NGẮN — chỉ tên thương hiệu.
+     *
+     * Google hiện khoảng 60 ký tự tiêu đề. Đuôi cũ " | GaRutin - Gà Rutin Cảnh
+     * Việt Nam" dài 35 ký tự, mà tiêu đề bài trung bình đã dài hơn thế — đo
+     * 15/09/2026: 69/69 bài bị cắt cụt, tức MỌI kết quả tìm kiếm đều hiện một
+     * câu dở dang. Rút xuống "GaRutin" đưa con số đó về 39/69.
+     *
+     * Đừng nhét từ khoá vào đây. Đuôi lặp trên mọi trang thì Google coi là vụn,
+     * và mỗi ký tự thêm vào là một ký tự cắt mất của phần phân biệt trang.
+     */
+    template: "%s | GaRutin",
     default: "Gà Rutin — Gà Cảnh Nhỏ Nhất Thế Giới, Đặc Điểm & Giá Bán",
   },
   description:
