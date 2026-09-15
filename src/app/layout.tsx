@@ -103,8 +103,42 @@ const dungJsonLd = (lienHe: { phone: string; address: string; zalo: string }) =>
     // Địa chỉ thật từ CMS: Google hiển thị mục doanh nghiệp địa phương theo
     // trường này, ghi trống chung chung thì không lên được tìm kiếm quanh đây.
     streetAddress: lienHe.address,
-    addressLocality: lienHe.address,
+    // TÁCH thành phố ra khỏi địa chỉ đầy đủ.
+    //
+    // Trước đây cả streetAddress lẫn addressLocality đều nhận nguyên chuỗi
+    // "Trại gà rutin Bình Tân, tp Hồ Chí Minh, Việt Nam" — Google đọc ra một
+    // địa phương tên là cả cụm đó, tức là không khớp với địa phương nào. Mà
+    // nhóm từ khoá mạnh nhất của shop toàn là địa phương: "mua gà rutin ở
+    // tphcm" hạng 5,1 · 26 nhấp, "gà rutin tphcm" hạng 5,0.
+    addressLocality: "TP Hồ Chí Minh",
   },
+
+  /*
+   * PHẠM VI PHỤC VỤ — cách đúng để nói "chúng tôi bán cho các tỉnh này".
+   *
+   * Google Autocomplete xác nhận có người tìm thật: "gà rutin đồng nai",
+   * "gà rutin bình dương", "mua gà rutin ở bình dương", "gà rutin vũng tàu",
+   * "mua gà rutin ở cần thơ".
+   *
+   * KHÔNG đẻ mỗi tỉnh một trang. Shop từng làm đúng vậy với 21 quận của TPHCM
+   * và đo ra CHỈ 1/21 trang có lưu lượng — 20 trang còn lại đã phải gộp bỏ.
+   * `areaServed` nói đúng điều đó với Google mà không sinh trang rác.
+   *
+   * Mô tả doanh nghiệp vốn đã ghi "giao hàng toàn quốc" nên khai ở đây là
+   * đúng sự thật đã công bố, không phải lời hứa mới.
+   */
+  areaServed: [
+    { "@type": "City", name: "TP Hồ Chí Minh" },
+    { "@type": "State", name: "Đồng Nai" },
+    { "@type": "State", name: "Bình Dương" },
+    { "@type": "State", name: "Bà Rịa - Vũng Tàu" },
+    { "@type": "State", name: "Long An" },
+    { "@type": "State", name: "Tây Ninh" },
+    { "@type": "State", name: "Bình Phước" },
+    { "@type": "City", name: "Cần Thơ" },
+    { "@type": "Country", name: "Việt Nam" },
+  ],
+
   sameAs: [`https://zalo.me/${lienHe.zalo}`],
 });
 
