@@ -10,6 +10,7 @@ import CartSidebar from "@/components/shared/CartSidebar";
 import { CartProvider } from "@/lib/CartContext";
 import { LienHeProvider } from "@/lib/LienHeContext";
 import { layLienHe } from "@/lib/lienHe";
+import { getProducts, getPosts } from "@/lib/api";
 
 /**
  * Font chữ cho toàn web.
@@ -152,6 +153,13 @@ export default async function RootLayout({
   const lienHe = await layLienHe();
   const jsonLd = dungJsonLd(lienHe);
 
+  // Liên kết cho chân trang. Hỏng thì chân trang rút gọn lại chứ KHÔNG được
+  // làm chết cả site — đây là layout, mọi trang đều đi qua đây.
+  const [sanPhamChan, baiChan] = await Promise.all([
+    getProducts().then((ds) => ds.filter((p) => p.isActive !== false).slice(0, 6)).catch(() => []),
+    getPosts('limit=6').then((r) => r.data ?? []).catch(() => []),
+  ]);
+
   return (
     <html lang="vi" className={beVietnamPro.variable}>
       <head>
@@ -165,7 +173,7 @@ export default async function RootLayout({
         <CartProvider>
           <SiteHeader lienHe={lienHe} />
           <main className="min-h-screen pb-20 md:pb-0">{children}</main>
-          <SiteFooter lienHe={lienHe} />
+          <SiteFooter lienHe={lienHe} sanPham={sanPhamChan} baiViet={baiChan} />
           <StickyBottomBar />
           <CartSidebar />
         </CartProvider>
