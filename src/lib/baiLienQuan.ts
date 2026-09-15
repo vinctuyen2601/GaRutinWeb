@@ -96,7 +96,16 @@ export function chonBaiLienQuan(
   soLuong = 4,
 ): Post[] {
   const ungVien = tatCa.filter(
-    (p) => p.slug !== baiHienTai.slug && p.status === 'published',
+    (p) =>
+      p.slug !== baiHienTai.slug &&
+      p.status === 'published' &&
+      // Bài ĐÃ GỘP thì không gợi ý nữa. Nó vẫn `published`, chỉ khác ở
+      // redirectTo — gợi ý nó là đẩy người đọc qua một lần chuyển hướng, và
+      // tiêu mất một trong bốn chỗ của khối "Đọc thêm".
+      //
+      // Đo 15/09/2026: 25/94 bài đã gộp (20 trang "mua gà rutin [quận]" +
+      // 5 bài gộp hôm nay), tức hơn một phần tư ứng viên.
+      !p.redirectTo,
   );
   if (ungVien.length === 0) return [];
 
