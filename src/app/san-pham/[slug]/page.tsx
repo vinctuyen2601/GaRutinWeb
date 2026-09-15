@@ -13,6 +13,7 @@ import { hauToDonVi } from "@/lib/donVi";
 import ProductStickyBar from "@/components/shared/ProductStickyBar";
 import ReviewSection from "@/components/shared/ReviewSection";
 import { giaBan, giaGach } from "@/lib/gia";
+import { stripHtml } from '@/lib/seo';
 
 export const revalidate = 120;
 
@@ -121,18 +122,26 @@ export default async function ProductDetailPage({
         }))
       : [];
 
+  // API trả avgRating dạng CHUỖI ("5.00"), phải ép về số trước khi dùng.
+  const avgRating = Number(product.avgRating ?? 0);
+  const reviewCount = Number(product.reviewCount ?? 0);
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description,
+    // Chữ THUẦN: schema.org không nhận markup, và HTML thô lọt vào đây thì
+    // Google đọc ra đầy thẻ.
+    description: stripHtml(product.description),
     image: product.images,
+    sku: product.id,
     brand: { "@type": "Brand", name: "GaRutin" },
     offers: {
       "@type": "Offer",
       price: price,
       priceCurrency: "VND",
       url: `${SITE_URL}/san-pham/${slug}`,
+      itemCondition: "https://schema.org/NewCondition",
       seller: { "@type": "Organization", name: "GaRutin" },
       availability:
         product.stockStatus === "in_stock"
@@ -141,6 +150,29 @@ export default async function ProductDetailPage({
           ? "https://schema.org/PreOrder"
           : "https://schema.org/OutOfStock",
     },
+    /*
+     * SAO VÀNG trên kết quả tìm kiếm.
+     *
+     * Chỉ phát khi CÓ đánh giá thật — Google phạt trang khai sao mà trên trang
+     * không có đánh giá nào để đối chứng.
+     *
+     * Vì sao đáng làm ngay: đo 15/09/2026, đối thủ lolipet.net xếp trên cho
+     * hầu hết truy vấn "gà rutin", nhưng trang rutin của họ KHÔNG có Product
+     * schema nào — kết quả của họ là dòng chữ xanh trần. Đây là đòn không phụ
+     * thuộc tuổi miền, mà tuổi miền thì GaRutin thua hẳn: nội dung sớm nhất
+     * 22/03/2026 so với 2013 của họ.
+     */
+    ...(reviewCount > 0 && avgRating > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: Number(avgRating.toFixed(1)),
+            reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
   };
 
   const breadcrumbJsonLd = {
