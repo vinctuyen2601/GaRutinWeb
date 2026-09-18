@@ -61,7 +61,7 @@ export default async function ProductsPage({
           <p>
             Toàn bộ gà rutin đang có tại trại, xem được giá từng màu ngay dưới đây.
             Gà rutin (<em>King Quail</em>, <em>Coturnix chinensis</em>) là loài chim
-            cảnh nhỏ nhất thế giới — dài 12–14&nbsp;cm, nặng 50–70&nbsp;g — nuôi làm
+            cảnh nhỏ nhất thế giới — dài 12–14&nbsp;cm, nặng 70–80&nbsp;g — nuôi làm
             cảnh chứ không phải gà thịt. Ít mùi, ít tiếng, nuôi được trong căn hộ.
           </p>
           {giaGa.length > 0 && (

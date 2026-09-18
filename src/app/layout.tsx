@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     default: "Gà Rutin — Gà Cảnh Nhỏ Nhất Thế Giới, Đặc Điểm & Giá Bán",
   },
   description:
-    "Gà rutin nặng 50–70g, cao 7–10cm, sống 3–5 năm, hơn 20 màu lông. Hiền, ít mùi, nuôi được trong căn hộ. Xem đặc điểm, cách nuôi và bảng giá tại trại.",
+    "Gà rutin nặng 70–80g, cao 7–10cm, sống 3–5 năm, hơn 20 màu lông. Hiền, ít mùi, nuôi được trong căn hộ. Xem đặc điểm, cách nuôi và bảng giá tại trại.",
   icons: { icon: "/favicon.svg" },
   keywords: [
     "gà rutin",

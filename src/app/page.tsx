@@ -40,14 +40,20 @@ import { layLienHe } from "@/lib/lienHe";
  * lệch thứ hạng.
  *
  * Mô tả dùng số liệu thật lấy từ bài "50 Câu Hỏi Thường Gặp" của chính trại —
- * 50–70g, 7–10cm, 3–5 năm, hơn 20 màu — để trả lời ngay câu "con này là gì"
+ * 70–80g, 7–10cm, 3–5 năm, hơn 20 màu — để trả lời ngay câu "con này là gì"
+ *
+ * Cân nặng CHỐT NGÀY 18/09/2026 với chủ trại: 70–80g, lấy gian hàng làm
+ * nguồn đúng. Trước đó trang này ghi 50–70g còn gian hàng ghi 70–80g —
+ * khách đọc trang chủ rồi mở trang sản phẩm là thấy hai số đánh nhau.
+ * Số này nằm cả trong dữ liệu có cấu trúc FAQ bên dưới, tức thứ Google
+ * đọc để hiện đoạn trả lời, nên sai ở đây là sai ngay trên kết quả tìm.
  * trên trang kết quả, trước cả khi khách bấm vào.
  */
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
   title: "Gà Rutin — Gà Cảnh Nhỏ Nhất Thế Giới, Đặc Điểm & Giá Bán",
   description:
-    "Gà rutin nặng 50–70g, cao 7–10cm, sống 3–5 năm, hơn 20 màu lông. Hiền, ít mùi, nuôi được trong căn hộ. Xem đặc điểm, cách nuôi và bảng giá tại trại.",
+    "Gà rutin nặng 70–80g, cao 7–10cm, sống 3–5 năm, hơn 20 màu lông. Hiền, ít mùi, nuôi được trong căn hộ. Xem đặc điểm, cách nuôi và bảng giá tại trại.",
 };
 
 const faqJsonLd = {
@@ -57,7 +63,7 @@ const faqJsonLd = {
     {
       '@type': 'Question',
       name: 'Gà Rutin là gì?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Gà Rutin (King Quail, Coturnix chinensis) là loài chim cảnh tí hon nhỏ nhất thế giới, chỉ dài 12–14 cm và nặng 50–70g. Chúng có bộ lông sặc sỡ với nhiều màu đột biến như xanh, nâu, trắng, bạc, maroon. Được nuôi làm cảnh và thú cưng, không phải để lấy thịt hay trứng.' },
+      acceptedAnswer: { '@type': 'Answer', text: 'Gà Rutin (King Quail, Coturnix chinensis) là loài chim cảnh tí hon nhỏ nhất thế giới, chỉ dài 12–14 cm và nặng 70–80g. Chúng có bộ lông sặc sỡ với nhiều màu đột biến như xanh, nâu, trắng, bạc, maroon. Được nuôi làm cảnh và thú cưng, không phải để lấy thịt hay trứng.' },
     },
     {
       '@type': 'Question',
@@ -109,7 +115,7 @@ export default async function HomePage() {
             <br className="hidden md:block" /> Thuần Chủng, Nhiều Màu Đẹp
           </h1>
           <p className="text-xl text-primary-100 mb-3">
-            Chỉ 12–14 cm · Nặng 50–70g · Hiền lành như thú cưng
+            Chỉ 12–14 cm · Nặng 70–80g · Hiền lành như thú cưng
           </p>
           <p className="text-primary-200 mb-8 max-w-2xl mx-auto">
             Gà Rutin (King Quail) là loài chim cảnh tí hon với bộ lông sặc sỡ
@@ -222,7 +228,7 @@ export default async function HomePage() {
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
               Gà Rutin — còn gọi là <strong>gà tí hon</strong> — là loài chim
-              cảnh nhỏ nhất thế giới, chỉ dài 12–14 cm và nặng 50–70g. Chúng có
+              cảnh nhỏ nhất thế giới, chỉ dài 12–14 cm và nặng 70–80g. Chúng có
               bộ lông sặc sỡ với hàng chục màu đột biến khác nhau: xanh đá, nâu,
               trắng, bạc, maroon, vàng, đen... Con đực thường sở hữu màu lông
               rực rỡ và đặc trưng hơn con cái.
@@ -236,7 +242,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
               {[
                 { label: "Kích thước", value: "12–14 cm" },
-                { label: "Cân nặng", value: "50–70g" },
+                { label: "Cân nặng", value: "70–80g" },
                 { label: "Tuổi thọ", value: "3–7 năm" },
                 { label: "Nhiệt độ", value: "20–37°C" },
               ].map((s) => (
