@@ -212,9 +212,18 @@ export default async function BlogPostPage({
                 Xem tất cả →
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            {/* MỘT hàng cuộn ngang, không phải lưới hai hàng.
+                Khối "Bài viết liên quan" nằm ngay dưới khối này. Đo
+                18/09/2026: bài đọc nhiều nhất có 135 lượt trên 135 khách
+                riêng — gần như không ai đọc bài thứ hai. Hai hàng sản phẩm
+                trên điện thoại đẩy khối bài liên quan xuống gần một màn
+                hình. Cuộn ngang giữ đủ bốn sản phẩm mà chỉ tốn một hàng,
+                nên không phải chọn giữa bán hàng và giữ người đọc. */}
+            <div className="flex gap-4 overflow-x-auto pb-2 snap-x">
               {noiBat.map((p) => (
-                <ProductCard key={p.id} product={p} />
+                <div key={p.id} className="w-[46%] md:w-[31%] shrink-0 snap-start">
+                  <ProductCard product={p} />
+                </div>
               ))}
             </div>
           </div>
