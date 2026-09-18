@@ -25,7 +25,13 @@ export type Nguon = {
 
 type NguonLuu = Nguon & { luuLuc: number };
 
-export type BuocPheu = 'view' | 'add_to_cart' | 'begin_checkout';
+export type BuocPheu =
+  | 'view'
+  | 'add_to_cart'
+  | 'begin_checkout'
+  // Bấm sang Zalo hoặc bấm gọi — hành động chốt đơn THẬT của cửa hàng.
+  | 'zalo_click'
+  | 'phone_click';
 
 function docLocal(key: string): string | null {
   try { return localStorage.getItem(key); } catch { return null; }

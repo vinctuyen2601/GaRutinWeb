@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, Suspense } from 'react';
 import { useSearchParams, usePathname } from 'next/navigation';
-import { layVisitorId, layNguon } from '@/lib/track';
+import { layVisitorId, layNguon, ghiNhan, type BuocPheu } from '@/lib/track';
 import { CO_404 } from './Danh404';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
@@ -13,6 +13,33 @@ declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
   }
+}
+
+/**
+ * ĐO NÚT LIÊN HỆ — Zalo và gọi điện.
+ *
+ * Vì sao cần: đơn thật của cả hai cửa hàng chốt qua Zalo, nhưng cú bấm sang
+ * Zalo trước nay KHÔNG được ghi nhận ở đâu cả — mọi tỉ lệ liên quan tới mua
+ * hàng đều thiếu tử số. Đo ngày 18/09/2026.
+ *
+ * Bắt bằng một bộ nghe CHUNG ở tầng document thay vì sửa từng nút, để nút thêm
+ * sau này tự được đếm mà không ai phải nhớ.
+ *
+ * Dùng pha CAPTURE vì link rời trang ngay; ghiNhan() dùng sendBeacon nên sự
+ * kiện sống sót qua lúc chuyển trang.
+ */
+function batNutLienHe(ghi: (ten: string, duongDan: string) => void): () => void {
+  if (typeof document === 'undefined') return () => {};
+  const xuLy = (e: MouseEvent) => {
+    const a = (e.target as HTMLElement | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+    if (!a) return;
+    const href = a.getAttribute('href') || '';
+    const ten = href.includes('zalo.me') ? 'zalo_click' : href.startsWith('tel:') ? 'phone_click' : '';
+    if (!ten) return;
+    ghi(ten, window.location.pathname);
+  };
+  document.addEventListener('click', xuLy, true);
+  return () => document.removeEventListener('click', xuLy, true);
 }
 
 function TrackVisitInner() {
@@ -50,6 +77,11 @@ function TrackVisitInner() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, searchParams]);
+
+  useEffect(
+    () => batNutLienHe((ten, duongDan) => ghiNhan(ten as BuocPheu, duongDan)),
+    [],
+  );
 
   return null;
 }
