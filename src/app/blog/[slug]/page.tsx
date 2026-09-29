@@ -11,18 +11,7 @@ import ProductCard from "@/components/shared/ProductCard";
 import dayjs from "dayjs";
 import PostStrip from "@/components/shared/PostStrip";
 
-/*
-  Cửa sổ dài là CỐ Ý, không phải quên chỉnh.
-
-  Vercel tính theo lượt GHI ISR và ép trần cửa sổ xuống 300 giây, nên mỗi URL
-  ghi được tới 288 lần một ngày. Với 197 URL của hai shop, bot quét sitemap là
-  đủ cạn 200.000 lượt của gói miễn phí — cạn thật ngày 29/09/2026.
-
-  Nội dung mới KHÔNG phải chờ hết cửa sổ này: backend gọi `/api/revalidate`
-  ngay khi lưu, trang lên tức thì. Con số dưới đây chỉ là lưới đỡ phòng khi
-  lời gọi đó hỏng.
-*/
-export const revalidate = 86400;
+export const revalidate = 120;
 
 export async function generateStaticParams() {
   const posts = await getPosts().then((r) => r.data).catch(() => []);

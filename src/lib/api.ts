@@ -1,15 +1,23 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
+
 /*
-  CỬA SỔ Ở TẦNG DỮ LIỆU PHẢI DÀI BẰNG HOẶC HƠN CỬA SỔ CỦA TRANG.
+  Các `revalidate` dưới đây là CỬA SỔ LÀM MỚI của từng lời gọi, tính bằng giây.
 
-  Next lấy giá trị NHỎ NHẤT giữa `export const revalidate` của trang và mọi
-  `revalidate` của fetch bên trong nó. Đặt trang 86400 mà để fetch ở 60 thì
-  trang vẫn làm mới mỗi phút — bản vá thành vô hiệu, và không có cảnh báo nào.
-  Bắt được lúc `next build` in ra cột Revalidate là "1m" thay vì "1d".
+  BẪY: Next lấy giá trị NHỎ NHẤT giữa `export const revalidate` của trang và
+  mọi `revalidate` của fetch chạy bên trong trang đó. Đặt trang 3600 mà để một
+  fetch ở 60 thì cả trang làm mới mỗi 60 giây, và không có cảnh báo nào cả.
+  Muốn biết con số thật thì đọc cột Revalidate trong kết quả `next build`,
+  đừng đọc mã nguồn.
 
-  Nội dung mới không phải chờ hết cửa sổ: backend gọi `/api/revalidate` ngay
-  khi lưu, và `revalidatePath` xoá cả cache trang lẫn cache dữ liệu.
+  Vì sao không đặt dài hơn cho đỡ tốn lượt ghi ISR của Vercel: đã thử đặt 86400
+  ngày 29/09/2026 và hỏng ngay việc chính. Khung xem trước trong CMS gọi
+  `getProductTemplates` và `getKhaiBaoKhoi`, nên sửa khuôn giao diện xong phải
+  chờ tới một ngày mới thấy. Hạn mức tràn hồi tháng 9 là do hai tuần dựng tính
+  năng sửa giao diện (khung xem trước tự nạp lại liên tục, và tần suất deploy
+  tăng bốn lần), không phải do lưu lượng khách.
+
+  Cần một trang lên ngay thì gọi POST /api/revalidate, đừng hạ các số này.
 */
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 
 export async function fetchApi<T>(path: string, options?: RequestInit & { revalidate?: number }): Promise<T> {
   const { revalidate, ...fetchOptions } = options ?? {};
@@ -72,10 +80,10 @@ export type Category = {
 };
 
 export const getProducts = (params?: string) =>
-  fetchApi<Product[]>(`/products${params ? `?${params}` : ''}`, { revalidate: 86400 });
+  fetchApi<Product[]>(`/products${params ? `?${params}` : ''}`, { revalidate: 60 });
 
 export const getProduct = (slug: string) =>
-  fetchApi<Product>(`/products/${slug}`, { revalidate: 86400 });
+  fetchApi<Product>(`/products/${slug}`, { revalidate: 120 });
 
 export type Review = {
   id: string;
@@ -91,16 +99,16 @@ export type Review = {
 export type PostsResponse = { data: Post[]; total: number; page: number; limit: number };
 
 export const getPosts = (params?: string) =>
-  fetchApi<PostsResponse>(`/posts${params ? `?${params}` : ''}`, { revalidate: 86400 });
+  fetchApi<PostsResponse>(`/posts${params ? `?${params}` : ''}`, { revalidate: 60 });
 
 export const getPost = (slug: string) =>
-  fetchApi<Post>(`/posts/${slug}`, { revalidate: 86400 });
+  fetchApi<Post>(`/posts/${slug}`, { revalidate: 120 });
 
 export const getCategories = () =>
-  fetchApi<Category[]>('/categories', { revalidate: 86400 });
+  fetchApi<Category[]>('/categories', { revalidate: 3600 });
 
 export const getSiteConfig = () =>
-  fetchApi<Record<string, string>>('/site-config', { revalidate: 86400 });
+  fetchApi<Record<string, string>>('/site-config', { revalidate: 3600 });
 
 export type GalleryItem = {
   id: string;
@@ -114,4 +122,4 @@ export type GalleryItem = {
 };
 
 export const getGallery = (params?: string) =>
-  fetchApi<GalleryItem[]>(`/gallery${params ? `?${params}` : ''}`, { revalidate: 86400 });
+  fetchApi<GalleryItem[]>(`/gallery${params ? `?${params}` : ''}`, { revalidate: 3600 });
