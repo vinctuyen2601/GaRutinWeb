@@ -1,4 +1,15 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
+/*
+  CỬA SỔ Ở TẦNG DỮ LIỆU PHẢI DÀI BẰNG HOẶC HƠN CỬA SỔ CỦA TRANG.
+
+  Next lấy giá trị NHỎ NHẤT giữa `export const revalidate` của trang và mọi
+  `revalidate` của fetch bên trong nó. Đặt trang 86400 mà để fetch ở 60 thì
+  trang vẫn làm mới mỗi phút — bản vá thành vô hiệu, và không có cảnh báo nào.
+  Bắt được lúc `next build` in ra cột Revalidate là "1m" thay vì "1d".
+
+  Nội dung mới không phải chờ hết cửa sổ: backend gọi `/api/revalidate` ngay
+  khi lưu, và `revalidatePath` xoá cả cache trang lẫn cache dữ liệu.
+*/
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api';
 
 export async function fetchApi<T>(path: string, options?: RequestInit & { revalidate?: number }): Promise<T> {
   const { revalidate, ...fetchOptions } = options ?? {};
@@ -61,10 +72,10 @@ export type Category = {
 };
 
 export const getProducts = (params?: string) =>
-  fetchApi<Product[]>(`/products${params ? `?${params}` : ''}`, { revalidate: 60 });
+  fetchApi<Product[]>(`/products${params ? `?${params}` : ''}`, { revalidate: 86400 });
 
 export const getProduct = (slug: string) =>
-  fetchApi<Product>(`/products/${slug}`, { revalidate: 120 });
+  fetchApi<Product>(`/products/${slug}`, { revalidate: 86400 });
 
 export type Review = {
   id: string;
@@ -80,16 +91,16 @@ export type Review = {
 export type PostsResponse = { data: Post[]; total: number; page: number; limit: number };
 
 export const getPosts = (params?: string) =>
-  fetchApi<PostsResponse>(`/posts${params ? `?${params}` : ''}`, { revalidate: 60 });
+  fetchApi<PostsResponse>(`/posts${params ? `?${params}` : ''}`, { revalidate: 86400 });
 
 export const getPost = (slug: string) =>
-  fetchApi<Post>(`/posts/${slug}`, { revalidate: 120 });
+  fetchApi<Post>(`/posts/${slug}`, { revalidate: 86400 });
 
 export const getCategories = () =>
-  fetchApi<Category[]>('/categories', { revalidate: 3600 });
+  fetchApi<Category[]>('/categories', { revalidate: 86400 });
 
 export const getSiteConfig = () =>
-  fetchApi<Record<string, string>>('/site-config', { revalidate: 3600 });
+  fetchApi<Record<string, string>>('/site-config', { revalidate: 86400 });
 
 export type GalleryItem = {
   id: string;
@@ -103,4 +114,4 @@ export type GalleryItem = {
 };
 
 export const getGallery = (params?: string) =>
-  fetchApi<GalleryItem[]>(`/gallery${params ? `?${params}` : ''}`, { revalidate: 3600 });
+  fetchApi<GalleryItem[]>(`/gallery${params ? `?${params}` : ''}`, { revalidate: 86400 });
