@@ -6,6 +6,7 @@ import ProductCard from "@/components/shared/ProductCard";
 import { dungKhung } from "@/lib/reels";
 import VideoStrip from "@/components/shared/VideoStrip";
 import GallerySection from "@/components/shared/GallerySection";
+import MuaSiCTA from "@/components/shared/MuaSiCTA";
 import { layLienHe } from "@/lib/lienHe";
 
 /*
@@ -200,6 +201,22 @@ export default async function HomePage() {
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
+            {/* Ngay dưới lưới sản phẩm: khách vừa xem giá từng con xong thì
+                câu hỏi tự nhiên là "lấy nhiều thì bao nhiêu". Trang không có
+                ô nào trả lời câu đó, nên phải nói ra bằng chữ. */}
+            <MuaSiCTA
+              phone={phone}
+              zalo={zalo}
+              tieuDe="Lấy số lượng hoặc nuôi làm giống?"
+              moTa={
+                <>
+                  Giá trên là bán lẻ. Nuôi đàn, nuôi làm giống hay lấy buôn thì
+                  gọi hoặc nhắn Zalo cho trại — được tư vấn chọn giống theo mục
+                  đích nuôi và báo giá sỉ tốt nhất.
+                </>
+              }
+              className="mt-8"
+            />
           </div>
         </section>
       )}

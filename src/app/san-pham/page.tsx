@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getProducts, getCategories, getPosts } from '@/lib/api';
 import ProductCard from '@/components/shared/ProductCard';
+import MuaSiCTA from '@/components/shared/MuaSiCTA';
+import { layLienHe } from '@/lib/lienHe';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/san-pham' },
@@ -24,12 +26,14 @@ export default async function ProductsPage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
-  const [products, categories, baiViet] = await Promise.all([
+  const [products, categories, baiViet, lienHe] = await Promise.all([
     getProducts(category ? `category=${category}` : undefined).catch(() => []),
     getCategories().catch(() => []),
     // Bài hướng dẫn để dẫn người đọc sang nội dung, và để trang này có đường
     // ra thay vì là ngõ cụt. Hỏng thì bỏ qua phần đó, không làm chết trang.
     getPosts('limit=8').then((r) => r.data ?? []).catch(() => []),
+    // layLienHe tự có lớp đỡ bằng biến môi trường nên không cần .catch ở đây.
+    layLienHe(),
   ]);
 
   const tenDanhMuc = category
@@ -113,6 +117,10 @@ export default async function ProductsPage({
                   </li>
                 ))}
               </ul>
+              {/* Ngay DƯỚI danh sách combo, không phải cuối trang: khách vừa
+                  đọc xong mức bày sẵn là lúc câu hỏi "lấy nhiều hơn thì sao"
+                  nảy ra. Đẩy xuống chân trang thì họ đã rời đi trước đó. */}
+              <MuaSiCTA phone={lienHe.phone} zalo={lienHe.zalo} className="mt-5" />
             </section>
           )}
 
