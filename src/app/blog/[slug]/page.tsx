@@ -102,7 +102,7 @@ export default async function BlogPostPage({
     description: post.excerpt,
     image: post.coverImage,
     datePublished: post.publishedAt,
-    dateModified: post.publishedAt,
+    dateModified: post.updatedAt ?? post.publishedAt,
     author: { "@type": "Organization", name: "GaRutin" },
     publisher: {
       "@type": "Organization",

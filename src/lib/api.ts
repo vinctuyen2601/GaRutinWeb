@@ -64,6 +64,8 @@ export type Post = {
   tags: string[];
   status: string;
   publishedAt?: string;
+  /** Lần sửa cuối — dùng cho dateModified của JSON-LD. Trước đây lấy publishedAt nên bài sửa lại vẫn báo Google là chưa đổi gì. */
+  updatedAt?: string;
   content?: string;
   seoTitle?: string;
   seoDescription?: string;
