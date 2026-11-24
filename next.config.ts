@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
   },
   trailingSlash: false,
 
+  // Chạy trên EC2 bằng pm2 (rời Vercel 24/11/2026). Bản standalone gói sẵn
+  // server.js + node_modules tối thiểu, build trên GitHub Actions rồi chép
+  // lên — máy chủ chỉ 2 GB RAM, không đủ chỗ cho `next build`.
+  output: 'standalone',
+
   /**
    * www → không-www. GỘP HAI BẢN SAO CỦA CÙNG MỘT SITE.
    *

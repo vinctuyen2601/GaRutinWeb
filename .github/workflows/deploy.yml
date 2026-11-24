@@ -1,0 +1,94 @@
+name: Deploy web lên EC2
+
+# Rời Vercel ngày 24/11/2026 (gói miễn phí bị khoá: 402 DEPLOYMENT_DISABLED).
+# Build ở đây chứ KHÔNG build trên máy chủ: EC2 chỉ có 2 GB RAM, đang chạy
+# Postgres + hai BE, một lần `next build` (~1 GB) đẩy cả máy sang swap.
+#
+# Phía máy chủ (không nằm trong git):
+#   ~/web/ecosystem.config.js   pm2, cổng, REVALIDATE_SECRET (đọc từ .env của BE)
+#   /etc/nginx/sites-available/garutin-web
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-web
+  cancel-in-progress: false
+
+env:
+  APP: garutin-web
+  PORT: '3012'
+  # NEXT_PUBLIC_* được GẮN CỨNG vào bản build — đổi ở đây rồi build lại,
+  # sửa trên máy chủ không có tác dụng. Đều là giá trị công khai.
+  NEXT_PUBLIC_API_URL: https://api.garutin.com/api
+  NEXT_PUBLIC_SITE_URL: https://garutin.com
+  NEXT_PUBLIC_PHONE: '0353672340'
+  NEXT_PUBLIC_ZALO_PHONE: '0353672340'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Đóng gói bản standalone
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+          tar -czf release.tgz -C .next/standalone .
+
+      - name: Chép lên máy chủ và chuyển bản
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+          KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/key && chmod 600 ~/.ssh/key
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          REL="$(date -u +%Y%m%d%H%M%S)-${GITHUB_SHA::7}"
+          scp -i ~/.ssh/key release.tgz "ubuntu@$HOST:/tmp/$APP-$REL.tgz"
+          ssh -i ~/.ssh/key "ubuntu@$HOST" "APP=$APP PORT=$PORT REL=$REL bash -s" <<'SH'
+          set -e
+          export PATH=/home/ubuntu/.nvm/versions/node/v23.11.1/bin:$PATH
+          GOC=~/web/$APP
+          mkdir -p "$GOC/releases/$REL"
+          tar -xzf "/tmp/$APP-$REL.tgz" -C "$GOC/releases/$REL"
+          rm -f "/tmp/$APP-$REL.tgz"
+          CU="$(readlink -f "$GOC/current" || true)"
+          ln -sfn "$GOC/releases/$REL" "$GOC/current"
+
+          # delete + start chứ không reload: pm2 giữ đường dẫn THẬT của cwd lúc
+          # khởi động, reload sẽ chạy lại bản cũ dù symlink đã đổi.
+          pm2 delete "$APP" >/dev/null 2>&1 || true
+          pm2 start ~/web/ecosystem.config.js --only "$APP"
+
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null "http://127.0.0.1:$PORT/"; then OK=1; break; fi
+            sleep 1
+          done
+          if [ -z "$OK" ]; then
+            echo "!!! Bản mới không lên — quay về bản cũ"
+            pm2 logs "$APP" --lines 40 --nostream || true
+            if [ -n "$CU" ]; then
+              ln -sfn "$CU" "$GOC/current"
+              pm2 delete "$APP" >/dev/null 2>&1 || true
+              pm2 start ~/web/ecosystem.config.js --only "$APP"
+            fi
+            exit 1
+          fi
+          pm2 save >/dev/null
+          # Giữ 3 bản gần nhất để quay lui.
+          ls -1dt "$GOC"/releases/* | tail -n +4 | xargs -r rm -rf
+          echo "=== Đang chạy $REL"
+          pm2 show "$APP" | grep -E "status|memory|restarts" || true
+          SH
