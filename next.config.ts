@@ -18,8 +18,13 @@ const nextConfig: NextConfig = {
      * kích thước theo màn hình. Với ảnh ~150 KB thì đánh đổi đó chấp nhận được.
      */
     unoptimized: true,
+    // Chỉ những nguồn ảnh thật sự dùng. Trước đây là '**': nếu có ai bật lại
+    // bộ tối ưu ảnh (bỏ unoptimized), bất kỳ ai cũng bắt được máy chủ nén ảnh
+    // từ trang bất kỳ qua /_next/image — trên EC2 2 GB RAM là tốn CPU/RAM của
+    // cả hai shop. Thêm nguồn ảnh mới thì thêm vào đây.
     remotePatterns: [
-      { protocol: 'https', hostname: '**' },
+      { protocol: 'https', hostname: 'images.garutin.com' }, // R2 — ảnh sản phẩm, bài viết
+      { protocol: 'https', hostname: 'img.youtube.com' }, // ảnh thu nhỏ video trong thư viện
       { protocol: 'http', hostname: 'localhost' },
     ],
   },
